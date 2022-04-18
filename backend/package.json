@@ -1,0 +1,23 @@
+{
+  "name": "finalpr",
+  "version": "1.0.0",
+  "description": "final project for concordia bootcamp",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev:backend": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-session": "^2.0.0",
+    "csurf": "^1.11.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "helmet": "^5.0.2",
+    "hpp": "^0.2.3",
+    "morgan": "^1.10.0",
+    "node-fetch": "2",
+    "nodemon": "^2.0.15"
+  }
+}
