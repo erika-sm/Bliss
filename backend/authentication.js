@@ -13,7 +13,7 @@ router.get("/api/login", (req, res) => {
     response_type: "code",
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
-    scope: "user-top-read",
+    scope: "user-top-read, playlist-modify-private, playlist-modify-public",
   }).toString();
 
   res.redirect(`https://accounts.spotify.com/authorize?${params}`);

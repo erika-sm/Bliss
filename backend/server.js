@@ -4,6 +4,7 @@ const hpp = require("hpp");
 const session = require("cookie-session");
 const csurf = require("csurf");
 const helmet = require("helmet");
+var cors = require("cors");
 const { generateRandomString } = require("./cookieGen");
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(helmet());
 app.use(hpp());
 app.use(express.json());
 app.use(require("./authentication"));
+app.use(cors());
 
 app.use(
   session({

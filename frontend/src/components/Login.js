@@ -1,14 +1,8 @@
 import { useEffect } from "react";
 import "animate.css";
 import styled, { keyframes } from "styled-components";
-import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  let redirect = useNavigate();
-
-  const handleSignIn = () => {
-    redirect("/api/login");
-  };
   return (
     <Wrapper className="titleLogo">
       <LogoWrapper>
@@ -24,7 +18,7 @@ const Login = () => {
           </SignInText>
         </SignInSpotify>
         <DemoAccount>
-          Don't have a Spotify account? Try out our demo
+          Don't have a Spotify account? Try out our demo account
         </DemoAccount>
       </SignInOptions>
     </Wrapper>
