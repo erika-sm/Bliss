@@ -25,31 +25,18 @@ const PlaylistModal = ({ itemId }) => {
   const handlePlaylistCreation = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const token = await fetch("/api/token");
-    const parsedToken = await token.json();
+    await createPlaylist(currentUser, initialPlaylistData, itemId);
 
-    const data = await fetch(
-      `https://api.spotify.com/v1/users/${currentUser}/playlists`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${parsedToken.data.access_token}`,
-        },
-        body: JSON.stringify(initialPlaylistData),
-      }
-    );
     setLoading(false);
   };
-
-  console.log(itemId);
 
   return (
     <div>
       {creatingPlaylist && (
         <PlaylistWrapper>
           <Modal ref={ref} className="playlistModal">
-            <Close>&times;</Close>
+            <Title>Create Your Playlist</Title>
+            <Close onClick={() => setCreatingPlaylist(false)}>&times;</Close>
             {loading ? (
               <SpinnerWrapper>
                 <LoadingSpinner />
@@ -86,7 +73,7 @@ const PlaylistModal = ({ itemId }) => {
                     onClick={() =>
                       setInitialPlaylistData({
                         ...initialPlaylistData,
-                        public: "false",
+                        public: false,
                       })
                     }
                     required
@@ -101,7 +88,7 @@ const PlaylistModal = ({ itemId }) => {
                     onClick={() =>
                       setInitialPlaylistData({
                         ...initialPlaylistData,
-                        public: "true",
+                        public: true,
                       })
                     }
                   />
@@ -129,7 +116,7 @@ const Name = styled.input`
 
 const Modal = styled.div`
   position: absolute;
-  top: 25%;
+  top: 15%;
   left: 50%;
   transform: translateX(-50%);
   border: solid;
@@ -174,11 +161,11 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   margin-left: 10px;
-  margin-top: 75px;
+  margin-top: 90px;
 `;
 
 const SubmitButton = styled.button`
-  margin-top: 50px;
+  margin-top: 60px;
   background-color: black;
   color: white;
   border: solid;
@@ -190,6 +177,14 @@ const SubmitButton = styled.button`
   left: 50%;
   transform: translateX(-50%);
   top: 65%;
+`;
+
+const Title = styled.h1`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  text-align: center;
 `;
 
 export default PlaylistModal;

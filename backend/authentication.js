@@ -13,7 +13,7 @@ router.get("/api/login", (req, res) => {
     response_type: "code",
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
-    scope: "user-top-read, playlist-modify-private, playlist-modify-public",
+    scope: "user-top-read, playlist-modify-public, playlist-modify-private",
   }).toString();
 
   res.redirect(`https://accounts.spotify.com/authorize?${params}`);
@@ -44,7 +44,7 @@ router.get("/api/callback", async (req, res) => {
 
   token = await data.json();
 
-  return res.redirect("/");
+  return res.redirect("/homepage");
 });
 
 router.get("/api/token", (req, res) => {

@@ -47,7 +47,7 @@ export const AppProvider = ({ children }) => {
     const token = await fetch("/api/token");
     const parsedToken = await token.json();
 
-    const data = await fetch(
+    const playlistData = await fetch(
       `https://api.spotify.com/v1/users/${currentUser}/playlists`,
       {
         method: "POST",
@@ -58,6 +58,24 @@ export const AppProvider = ({ children }) => {
         body: JSON.stringify(initialData),
       }
     );
+
+    const response = await playlistData.json();
+
+    const addTracks = await fetch(
+      `https://api.spotify.com/v1/playlists/${response.id}/tracks`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${parsedToken.data.access_token}`,
+        },
+        body: JSON.stringify(playlistTrackIds),
+      }
+    );
+
+    const tracksResponse = await addTracks.json();
+
+    console.log(tracksResponse);
   };
 
   return (
