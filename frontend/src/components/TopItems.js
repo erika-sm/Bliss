@@ -4,6 +4,7 @@ import styled from "styled-components";
 import LoadingSpinner from "./LoadingSpinner";
 import PlaylistModal from "./PlaylistModal";
 import Header from "./Header";
+import Orb from "./Orb";
 
 const TopItems = () => {
   const [timeRange, setTimeRange] = useState("short_term");
@@ -51,6 +52,26 @@ const TopItems = () => {
   useEffect(() => {
     getTopItems();
   }, [timeRange, item, limit]);
+
+  //recommendations code
+  useEffect(async () => {
+    const token = await fetch("/api/token");
+    const parsedToken = await token.json();
+
+    const data = await fetch(
+      `https://api.spotify.com/v1/recommendations/?seed_tracks=58r5Sc6rwLR3tGYBMbEWpK&target_danceability=0.8`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${parsedToken.data.access_token}`,
+        },
+      }
+    );
+
+    const response = await data.json();
+
+    console.log(response);
+  }, []);
 
   return (
     <div>

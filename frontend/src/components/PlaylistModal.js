@@ -104,7 +104,7 @@ const PlaylistModal = ({ itemId }) => {
 };
 
 const PlaylistWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 100%;
   backdrop-filter: blur(8px);

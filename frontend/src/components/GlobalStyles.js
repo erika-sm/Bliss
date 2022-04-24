@@ -95,6 +95,63 @@ export default createGlobalStyle`
 	font-size: 10px;
 }
 
+.orb{ 
+/* border: solid;
+border-color: white;
+background-color:#ff99f1;
+background-image:
+radial-gradient(at 9% 17%, hsla(182,70%,68%,1) 0px, transparent 50%),
+radial-gradient(at 98% 26%, hsla(228,70%,76%,1) 0px, transparent 50%),
+radial-gradient(at 24% 29%, hsla(70,68%,71%,1) 0px, transparent 50%),
+radial-gradient(at 33% 85%, hsla(100,98%,66%,1) 0px, transparent 50%); */
+
+}
+
+.slidecontainer {
+  margin-top: 20px;
+
+}
+
+.slider {
+  -webkit-appearance: none;
+  
+  height: 15px;
+  border-radius: 5px;
+  background: white;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  pointer-events: none;
+ 
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: white;
+  border: solid;
+pointer-events: auto;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: white;
+  border: solid;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+
 @media all and (max-width: 1000px){
     .playlistModal {
         height: 50%;

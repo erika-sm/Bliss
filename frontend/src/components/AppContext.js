@@ -9,6 +9,58 @@ export const AppProvider = ({ children }) => {
   const [creatingPlaylist, setCreatingPlaylist] = useState(false);
   const [currentUser, setCurrentUser] = useState();
 
+  const recommendationSliderArray = [
+    {
+      name: "Target Energy",
+      min: 0,
+      max: 1,
+      step: 0.05,
+      defaultValue: 0.5,
+      hue: 115,
+      defaultLightness: 40,
+      colorRange: 1,
+    },
+    {
+      name: "Target Danceability",
+      min: 0,
+      max: 1,
+      step: 0.05,
+      defaultValue: 0.5,
+      hue: 180,
+      defaultLightness: 45,
+      colorRange: 1,
+    },
+    {
+      name: "Target Acousticness",
+      min: 0,
+      max: 1,
+      step: 0.05,
+      defaultValue: 0.5,
+      hue: 35,
+      defaultLightness: 55,
+      colorRange: 1,
+    },
+    {
+      name: "Target Valence",
+      min: 0,
+      max: 1,
+      step: 0.05,
+      hue: 307,
+      defaultLightness: 45,
+      colorRange: 1,
+    },
+    {
+      name: "Target Tempo",
+      min: 0,
+      max: 1,
+      step: 0.05,
+      defaultValue: 0.5,
+      hue: 254,
+      defaultLightness: 50,
+      colorRange: 1,
+    },
+  ];
+
   const getCurrentUser = async () => {
     const token = await fetch("/api/token");
     const parsedToken = await token.json();
@@ -88,6 +140,7 @@ export const AppProvider = ({ children }) => {
         setCreatingPlaylist,
         currentUser,
         createPlaylist,
+        recommendationSliderArray,
       }}
     >
       {children}
