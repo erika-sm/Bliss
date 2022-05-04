@@ -295,12 +295,13 @@ const Filter = styled.div`
   width: 100vw;
   display: flex;
   justify-content: center;
+  z-index: 100;
 `;
 
 const PlaylistButtonWrapper = styled.div`
   font-size: 12px;
-  right: 0;
-  margin-right: 50px;
+  left: 50%;
+  transform: translateX(-60%);
   position: absolute;
 `;
 

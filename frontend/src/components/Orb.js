@@ -41,7 +41,7 @@ const Circle = styled.div`
     ),
     radial-gradient(at 63% 85%, hsla(${props.acousticnessHue}, ${props.acousticnessSaturation}%, ${props.acousticnessLightness}%, 1) 0px, transparent 50%),
     radial-gradient(at 33% 85%, hsla(${props.valenceHue}, ${props.valenceSaturation}%, ${props.valenceLightness}%, 1) 0px, transparent 70%),
-    radial-gradient(at 63% 29%, hsla(${props.tempoHue}, ${props.tempoSaturation}%, ${props.tempoLightness}%, 1) 0px, transparent 50%)`};
+    radial-gradient(at 63% 29%, hsla(${props.tempoHue}, ${props.tempoSaturation}%, ${props.tempoLightness}%, 1) 0px, transparent 100%)`};
 `;
 
 export default Orb;

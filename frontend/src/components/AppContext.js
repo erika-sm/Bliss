@@ -8,6 +8,7 @@ export const AppProvider = ({ children }) => {
   const [greeting, setGreeting] = useState();
   const [creatingPlaylist, setCreatingPlaylist] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [selectedTab, setSelectedTab] = useState("topItems");
 
   const recommendationSliderArray = [
     {
@@ -167,6 +168,8 @@ export const AppProvider = ({ children }) => {
         currentUser,
         createPlaylist,
         recommendationSliderArray,
+        selectedTab,
+        setSelectedTab,
       }}
     >
       {children}

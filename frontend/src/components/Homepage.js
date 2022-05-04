@@ -1,10 +1,21 @@
+import React, { useContext } from "react";
 import styled from "styled-components";
+import Recommendations from "./Recommendations";
 import TopItems from "./TopItems";
+import Profile from "./Profile";
+import { AppContext } from "./AppContext";
 
 const Homepage = () => {
+  const { selectedTab } = useContext(AppContext);
   return (
     <Wrapper>
-      <TopItems />
+      {selectedTab === "topItems" ? (
+        <TopItems />
+      ) : selectedTab === "recommendations" ? (
+        <Recommendations />
+      ) : (
+        selectedTab === "profile" && <Profile />
+      )}
     </Wrapper>
   );
 };

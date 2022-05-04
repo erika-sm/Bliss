@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import Orb from "./Orb";
 import Slider from "./Slider";
 import { AppContext } from "./AppContext";
 import styled from "styled-components";
+import Header from "./Header";
 
 const Recommendations = () => {
   const { recommendationSliderArray } = useContext(AppContext);
@@ -10,6 +10,7 @@ const Recommendations = () => {
   console.log(recommendationSliderArray);
   return (
     <Wrapper>
+      <Header />
       {recommendationSliderArray.map((slider) => (
         <Slider
           key={slider.name}
@@ -35,6 +36,7 @@ const Recommendations = () => {
 
 const Wrapper = styled.div`
   touch-action: none;
+  margin-top: 90px;
 `;
 
 export default Recommendations;
