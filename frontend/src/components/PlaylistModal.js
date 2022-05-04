@@ -12,7 +12,6 @@ const PlaylistModal = ({ itemId }) => {
     public: "",
   });
 
-  console.log(initialPlaylistData);
   const { creatingPlaylist, setCreatingPlaylist, currentUser, createPlaylist } =
     useContext(AppContext);
   const clickAway = () => {

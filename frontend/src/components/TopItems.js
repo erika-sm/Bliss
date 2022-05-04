@@ -5,7 +5,8 @@ import LoadingSpinner from "./LoadingSpinner";
 import PlaylistModal from "./PlaylistModal";
 import Header from "./Header";
 import Orb from "./Orb";
-
+import { orbLightness } from "./Utils";
+import SongFeaturesTooltip from "./SongFeaturesTooltip";
 const TopItems = () => {
   const [timeRange, setTimeRange] = useState("short_term");
   const [topItems, setTopItems] = useState("");
@@ -13,10 +14,14 @@ const TopItems = () => {
   const [limit, setLimit] = useState(20);
   const [loading, setLoading] = useState(false);
   const [itemId, setItemId] = useState([]);
+  const [itemFeatures, setItemFeatures] = useState([]);
+  const [isHovered, setIsHovered] = useState();
+
+  console.log(itemFeatures);
 
   console.log(topItems);
 
-  const { greeting, itemLimit, setCreatingPlaylist, creatingPlaylist } =
+  const { itemLimit, setCreatingPlaylist, creatingPlaylist } =
     useContext(AppContext);
 
   const getTopItems = async () => {
@@ -39,6 +44,7 @@ const TopItems = () => {
     setTopItems(json);
 
     let items = json.items;
+    let itemList = json.items;
 
     let idArray = items.map((item) => {
       return `spotify:track:${item.id}`;
@@ -47,6 +53,28 @@ const TopItems = () => {
     setItemId({ uris: idArray });
 
     setLoading(false);
+
+    let idsForFeatures = itemList
+      .map((item) => {
+        return item.id;
+      })
+      .toString();
+
+    if (item === "tracks") {
+      const fetchFeaturesData = await fetch(
+        `https://api.spotify.com/v1/audio-features?ids=${idsForFeatures}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${parsedToken.data.access_token}`,
+          },
+        }
+      );
+
+      const featureData = await fetchFeaturesData.json();
+
+      setItemFeatures(featureData.audio_features);
+    }
   };
 
   useEffect(() => {
@@ -59,7 +87,7 @@ const TopItems = () => {
     const parsedToken = await token.json();
 
     const data = await fetch(
-      `https://api.spotify.com/v1/recommendations/?seed_tracks=58r5Sc6rwLR3tGYBMbEWpK&target_danceability=0.8`,
+      `https://api.spotify.com/v1/recommendations/?seed_tracks=58r5Sc6rwLR3tGYBMbEWpK&target_energy=0.8`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -128,13 +156,87 @@ const TopItems = () => {
                     ></AddTracksButton>
                   </PlaylistButtonWrapper>
                 )}
-
-                {topItems.items.map((track) => (
-                  <TopTracks key={track.id}>
-                    <img alt="Album cover" src={track.album.images[2].url} />
-                    {track.name} - {track.artists[0].name}
-                  </TopTracks>
-                ))}
+                <ItemsWrapper>
+                  {topItems.items.map((track) => (
+                    <TopTracks key={track.id}>
+                      <AlbumCover
+                        alt="Album cover"
+                        src={track.album.images[2].url}
+                      />
+                      <ItemDetails>
+                        <TrackName>{track.name}</TrackName>
+                        <ArtistName>{track.artists[0].name}</ArtistName>
+                        <OrbContainer
+                          onMouseOver={() => setIsHovered(track.id)}
+                          onTouchStart={() => setIsHovered(track.id)}
+                          onMouseOut={() => setIsHovered("")}
+                          onTouchEnd={() => setIsHovered("")}
+                        >
+                          {itemFeatures.length > 1 &&
+                            itemFeatures.map(
+                              (feature) =>
+                                feature.id === track.id && (
+                                  <Orb
+                                    key={feature.id}
+                                    energy={orbLightness(
+                                      "energy",
+                                      feature.energy
+                                    )}
+                                    danceability={orbLightness(
+                                      "danceability",
+                                      feature.danceability
+                                    )}
+                                    acousticness={orbLightness(
+                                      "acousticness",
+                                      feature.acousticness
+                                    )}
+                                    valence={orbLightness(
+                                      "valence",
+                                      feature.valence
+                                    )}
+                                    tempo={orbLightness("tempo", feature.tempo)}
+                                  />
+                                )
+                            )}
+                          {itemFeatures.length > 1 &&
+                            itemFeatures.map(
+                              (feature) =>
+                                feature.id === track.id &&
+                                isHovered === track.id && (
+                                  <SongFeaturesTooltip
+                                    energy={feature.energy}
+                                    energyColors={orbLightness(
+                                      "energy",
+                                      feature.energy
+                                    )}
+                                    danceability={feature.danceability}
+                                    danceabilityColors={orbLightness(
+                                      "danceability",
+                                      feature.danceability
+                                    )}
+                                    acousticness={feature.acousticness}
+                                    acousticnessColors={orbLightness(
+                                      "acousticness",
+                                      feature.acousticness
+                                    )}
+                                    valence={feature.valence}
+                                    valenceColors={orbLightness(
+                                      "valence",
+                                      feature.valence
+                                    )}
+                                    tempo={feature.tempo}
+                                    tempoColors={orbLightness(
+                                      "tempo",
+                                      feature.tempo
+                                    )}
+                                  />
+                                )
+                            )}
+                        </OrbContainer>
+                      </ItemDetails>
+                    </TopTracks>
+                  ))}
+                </ItemsWrapper>
               </>
             ) : (
               topItems.items &&
@@ -159,7 +261,11 @@ const Wrapper = styled.div`
 `;
 
 const TopArtists = styled.div``;
-const TopTracks = styled.div``;
+const TopTracks = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+`;
 
 const Select = styled.select`
   background-color: black;
@@ -202,6 +308,30 @@ const AddTracksButton = styled.button`
   margin-left: 5px;
   position: absolute;
   margin-top: -5px;
+`;
+
+const OrbContainer = styled.div`
+  display: flex;
+  height: 30px;
+  width: 30px;
+`;
+
+const AlbumCover = styled.img`
+  height: 70px;
+  width: 70px;
+`;
+
+const TrackName = styled.div``;
+
+const ArtistName = styled.div``;
+
+const ItemDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ItemsWrapper = styled.div`
+  margin-top: 50px;
 `;
 
 export default TopItems;

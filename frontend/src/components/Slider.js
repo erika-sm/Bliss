@@ -7,16 +7,21 @@ const Slider = ({
   max,
   step,
   defaultValue,
+  highHue,
+  lowHue,
+  medHue,
   hue,
   defaultLightness,
   colorRange,
+  lowSaturation,
+  highSaturation,
+  medSaturation,
 }) => {
   const [counter, setCounter] = useState(defaultValue);
   const [lightness, setLightness] = useState(defaultLightness);
   const [currentValue, setCurrentValue] = useState(counter);
 
-  console.log(counter);
-  console.log(lightness);
+  console.log(highHue);
 
   useEffect(() => {
     if (counter > currentValue) {
@@ -31,27 +36,97 @@ const Slider = ({
   return (
     <Wrapper>
       <>
-        <Title>{name}</Title>
-        <FeatureWrapper>
-          <div className="slidecontainer">
-            <SliderContainer>
-              0
-              <SliderBar
-                type="range"
-                min={min}
-                max={max}
-                value={counter}
-                step={step}
-                className="slider"
-                onChange={(e) => {
-                  setCounter(e.target.value);
-                }}
-              />
-              1
-            </SliderContainer>
-          </div>
-          <Circle hue={hue} lightness={lightness} />
-        </FeatureWrapper>
+        {name === "Target Tempo" ? (
+          <>
+            <Title>{name}</Title>
+            <FeatureWrapper>
+              <div className="slidecontainer">
+                <SliderContainer>
+                  40
+                  <SliderBar
+                    type="range"
+                    min={min}
+                    max={max}
+                    value={counter}
+                    step={step}
+                    className="slider"
+                    onChange={(e) => {
+                      setCounter(e.target.value);
+                    }}
+                  />
+                  240
+                </SliderContainer>
+              </div>
+              {counter >= 40 && counter <= 110 ? (
+                <Circle
+                  hue={lowHue}
+                  lightness={lightness}
+                  saturation={lowSaturation}
+                />
+              ) : counter > 110 && counter <= 170 ? (
+                <Circle
+                  hue={medHue}
+                  lightness={lightness}
+                  saturation={medSaturation}
+                />
+              ) : (
+                counter > 170 &&
+                counter <= 240 && (
+                  <Circle
+                    hue={highHue}
+                    lightness={lightness}
+                    saturation={highSaturation}
+                  />
+                )
+              )}
+            </FeatureWrapper>
+          </>
+        ) : (
+          <>
+            <Title>{name}</Title>
+            <FeatureWrapper>
+              <div className="slidecontainer">
+                <SliderContainer>
+                  0
+                  <SliderBar
+                    type="range"
+                    min={min}
+                    max={max}
+                    value={counter}
+                    step={step}
+                    className="slider"
+                    onChange={(e) => {
+                      setCounter(e.target.value);
+                    }}
+                  />
+                  1
+                </SliderContainer>
+              </div>
+              {counter >= 0 && counter <= 0.35 ? (
+                <Circle
+                  hue={lowHue}
+                  lightness={lightness}
+                  saturation={lowSaturation}
+                />
+              ) : counter > 0.35 && counter <= 0.65 ? (
+                <Circle
+                  hue={medHue}
+                  lightness={lightness}
+                  saturation={medSaturation}
+                />
+              ) : (
+                counter > 0.65 &&
+                counter <= 1 && (
+                  <Circle
+                    hue={highHue}
+                    lightness={lightness}
+                    saturation={highSaturation}
+                  />
+                )
+              )}
+            </FeatureWrapper>
+          </>
+        )}
       </>
     </Wrapper>
   );
@@ -75,6 +150,19 @@ const Wrapper = styled.div`
 `;
 
 const Circle = styled.div`
+  height: 40px;
+  width: 40px;
+  margin-left: 10px;
+  margin-top: 5px;
+  border: solid;
+  border-color: white;
+  border-radius: 50%;
+
+  background-color: ${(props) =>
+    `hsla(${props.hue}, ${props.saturation}%, ${props.lightness}%, 1)`};
+`;
+
+const EnergyCircle = styled.div`
   height: 40px;
   width: 40px;
   margin-left: 10px;

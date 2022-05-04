@@ -9,6 +9,8 @@ export default createGlobalStyle`
         font-family: 'Montserrat', sans-serif;
         background-color: black;
         color: white;
+        height: 100%;
+        width: 100%;
   
     }
 
