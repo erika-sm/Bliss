@@ -3,6 +3,7 @@ import Slider from "./Slider";
 import { AppContext } from "./AppContext";
 import styled from "styled-components";
 import Header from "./Header";
+import SearchBar from "./SearchBar";
 
 const Recommendations = () => {
   const { recommendationSliderArray } = useContext(AppContext);
@@ -11,6 +12,7 @@ const Recommendations = () => {
   return (
     <Wrapper>
       <Header />
+      <SearchBar />
       {recommendationSliderArray.map((slider) => (
         <Slider
           key={slider.name}
