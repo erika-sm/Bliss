@@ -145,7 +145,6 @@ const Title = styled.p`
 `;
 
 const Wrapper = styled.div`
-  width: 100%;
   padding: 10px;
 `;
 
@@ -160,19 +159,6 @@ const Circle = styled.div`
 
   background-color: ${(props) =>
     `hsla(${props.hue}, ${props.saturation}%, ${props.lightness}%, 1)`};
-`;
-
-const EnergyCircle = styled.div`
-  height: 40px;
-  width: 40px;
-  margin-left: 10px;
-  margin-top: 5px;
-  border: solid;
-  border-color: white;
-  border-radius: 50%;
-
-  background-color: ${(props) =>
-    `hsla(${props.hue}, 100%, ${props.lightness}%, 1)`};
 `;
 
 const FeatureWrapper = styled.div`
