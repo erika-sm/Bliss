@@ -22,85 +22,103 @@ const TopItems = () => {
 
   console.log(topItems);
 
-  const { itemLimit, setCreatingPlaylist, creatingPlaylist } =
-    useContext(AppContext);
+  const {
+    itemLimit,
+    setCreatingPlaylist,
+    creatingPlaylist,
+    accessToken,
+    refresh,
+    refreshToken,
+  } = useContext(AppContext);
 
   const getTopItems = async () => {
     setLoading(true);
-    const token = await fetch("/api/token");
-    const parsedToken = await token.json();
-
-    const data = await fetch(
-      `https://api.spotify.com/v1/me/top/${item}?time_range=${timeRange}&limit=${limit}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${parsedToken.data.access_token}`,
-        },
-      }
-    );
-
-    const json = await data.json();
-
-    setTopItems(json);
-
-    let items = json.items;
-    let itemList = json.items;
-
-    let idArray = items.map((item) => {
-      return `spotify:track:${item.id}`;
-    });
-
-    setItemId({ uris: idArray });
-
-    setLoading(false);
-
-    let idsForFeatures = itemList
-      .map((item) => {
-        return item.id;
-      })
-      .toString();
-
-    if (item === "tracks") {
-      const fetchFeaturesData = await fetch(
-        `https://api.spotify.com/v1/audio-features?ids=${idsForFeatures}`,
+    if (accessToken && refreshToken) {
+      console.log("hello");
+      const data = await fetch(
+        `https://api.spotify.com/v1/me/top/${item}?time_range=${timeRange}&limit=${limit}`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${parsedToken.data.access_token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
 
-      const featureData = await fetchFeaturesData.json();
+      const json = await data.json();
 
-      setItemFeatures(featureData.audio_features);
+      if (json.error) {
+        setLoading(true);
+        await refresh();
+
+        const data = await fetch(
+          `https://api.spotify.com/v1/me/top/${item}?time_range=${timeRange}&limit=${limit}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const pushedData = await data.json();
+        setTopItems(pushedData);
+      } else setTopItems(json);
+
+      let items = json.items;
+      let itemList = json.items;
+
+      let idArray = items.map((item) => {
+        return `spotify:track:${item.id}`;
+      });
+
+      setItemId({ uris: idArray });
+
+      setLoading(false);
+
+      let idsForFeatures = itemList
+        .map((item) => {
+          return item.id;
+        })
+        .toString();
+
+      if (item === "tracks") {
+        const fetchFeaturesData = await fetch(
+          `https://api.spotify.com/v1/audio-features?ids=${idsForFeatures}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        const featureData = await fetchFeaturesData.json();
+
+        setItemFeatures(featureData.audio_features);
+      }
     }
   };
 
   useEffect(() => {
     getTopItems();
-  }, [timeRange, item, limit]);
+  }, [timeRange, item, limit, accessToken, refreshToken]);
 
   //recommendations code
-  useEffect(async () => {
-    const token = await fetch("/api/token");
-    const parsedToken = await token.json();
+  //   useEffect(async () => {
+  //     const data = await fetch(
+  //       `https://api.spotify.com/v1/recommendations/?seed_tracks=58r5Sc6rwLR3tGYBMbEWpK&target_energy=0.8`,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
 
-    const data = await fetch(
-      `https://api.spotify.com/v1/recommendations/?seed_tracks=58r5Sc6rwLR3tGYBMbEWpK&target_energy=0.8`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${parsedToken.data.access_token}`,
-        },
-      }
-    );
+  //     const response = await data.json();
 
-    const response = await data.json();
-
-    console.log(response);
-  }, []);
+  //     console.log(response);
+  //   }, []);
 
   return (
     <div>

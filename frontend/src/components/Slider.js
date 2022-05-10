@@ -38,7 +38,9 @@ const Slider = ({
       <>
         {name === "Target Tempo" ? (
           <>
-            <Title>{name}</Title>
+            <Title>
+              {name} <div className="helpTip">?</div>
+            </Title>
             <FeatureWrapper>
               <div className="slidecontainer">
                 <SliderContainer>
@@ -83,7 +85,9 @@ const Slider = ({
           </>
         ) : (
           <>
-            <Title>{name}</Title>
+            <Title>
+              {name} <div className="helpTip">?</div>
+            </Title>
             <FeatureWrapper>
               <div className="slidecontainer">
                 <SliderContainer>
@@ -140,8 +144,9 @@ const SliderContainer = styled.div`
   display: flex;
 `;
 
-const Title = styled.p`
+const Title = styled.div`
   margin-bottom: -10px;
+  display: flex;
 `;
 
 const Wrapper = styled.div`

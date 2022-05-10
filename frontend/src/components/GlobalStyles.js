@@ -97,21 +97,68 @@ export default createGlobalStyle`
 	font-size: 10px;
 }
 
-.orb{ 
-/* border: solid;
-border-color: white;
-background-color:#ff99f1;
-background-image:
-radial-gradient(at 9% 17%, hsla(182,70%,68%,1) 0px, transparent 50%),
-radial-gradient(at 98% 26%, hsla(228,70%,76%,1) 0px, transparent 50%),
-radial-gradient(at 24% 29%, hsla(70,68%,71%,1) 0px, transparent 50%),
-radial-gradient(at 33% 85%, hsla(100,98%,66%,1) 0px, transparent 50%); */
-
+.helpTip {
+  border-radius: 50%;
+  border: solid;
+  border-color: white;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  margin-left: 5px;
+  font-size: 12px;
+  border-width: 1px;
 }
 
 .slidecontainer {
   margin-top: 20px;
 
+}
+
+.navButtons {
+  height: 30px;
+  width: 30px;
+
+  background-color: black;
+  color: white;
+  text-align: center;
+  font-size: 25px;
+  padding-bottom: 4px;
+  
+
+}
+.arrow-box {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+
+.arrow-box .arrow-round {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: calc(50px / 4) solid white;
+  border-radius: 50%;
+  border-right-color: transparent;
+  transition: transform 1s;
+}
+
+.arrow-box .arrow-round::after {
+  content: "";
+  position: absolute;
+  top: -22.5%;
+  left: 65%;
+  border: calc(50px * 0.5) solid #fff;
+  border-bottom-color: white;
+  border-left-color: transparent;
+  border-top-width: 0;
+  border-right-width: 0;
+}
+
+ .arrow-rotate {
+  transform: rotate(1turn) scale(1.2);
 }
 
 .slider {

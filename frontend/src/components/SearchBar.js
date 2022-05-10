@@ -1,58 +1,64 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { AppContext } from "./AppContext";
+import LoadingSpinner from "./LoadingSpinner";
 
-const SearchBar = () => {
+const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
   const [loading, setLoading] = useState(false);
   const [searchType, setSearchType] = useState("artist");
   const [searchTerms, setSearchTerms] = useState("");
-  const [results, setResults] = useState("");
+  const [results, setResults] = useState();
 
-  console.log(results.type);
+  const { accessToken } = useContext(AppContext);
 
   const getSearchedItems = async () => {
     setLoading(true);
-    setResults({});
-    const token = await fetch("/api/token");
-    const parsedToken = await token.json();
 
-    const data = await fetch(
-      `https://api.spotify.com/v1/search?type=${searchType}&q=${searchType}:${searchTerms}&limit=5`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${parsedToken.data.access_token}`,
-        },
-      }
-    );
+    if (accessToken) {
+      setResults({});
 
-    const json = await data.json();
+      const data = await fetch(
+        `https://api.spotify.com/v1/search?type=${searchType}&q=${searchType}:${searchTerms}&limit=5`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-    if (searchType === "artist") {
-      if (json.artists.total === 0) {
-        setResults("no matches");
-      } else {
-        setResults(json.artists);
+      const json = await data.json();
+
+      if (searchType === "artist") {
+        if (json.artists.total === 0) {
+          setResults("no matches");
+        } else {
+          setResults(json.artists);
+        }
+      } else if (searchType === "track") {
+        if (json.tracks.total === 0) {
+          setResults("no matches");
+        } else {
+          setResults(json.tracks);
+        }
       }
-    } else if (searchType === "track") {
-      if (json.tracks.total === 0) {
-        setResults("no matches");
-      } else {
-        setResults(json.tracks);
-      }
+
+      console.log(json);
+
+      setLoading(false);
     }
-
-    console.log(json);
-
-    setLoading(false);
   };
 
   useEffect(() => {
+    let cancel = false;
+    if (cancel) return;
+
     getSearchedItems();
-  }, [searchTerms]);
+    return () => (cancel = true);
+  }, [searchTerms, accessToken]);
 
   return (
     <Wrapper>
-      Choose up to 5 tracks and/or artists
       <SearchWrapper>
         <select
           onChange={(e) => {
@@ -74,11 +80,18 @@ const SearchBar = () => {
           {results === "no matches" ? (
             <NoMatches>Couldn't find any matches</NoMatches>
           ) : (
+            results &&
             results.items &&
             results.items.map((result) => (
-              <ResultsWrapper>
-                {result.images && (
-                  <ResultImage alt="Artist Image" src={result.images[2].url} />
+              <ResultsWrapper
+                onClick={() => {
+                  addSelectedItems(result);
+                  setSearchTerms("");
+                  setAddItem(!addItem);
+                }}
+              >
+                {result.images && result.images[0] && result && (
+                  <ResultImage alt="Artist Image" src={result.images[0].url} />
                 )}
                 <ItemDetails>
                   <ArtistName> {result.name}</ArtistName>
@@ -94,10 +107,11 @@ const SearchBar = () => {
             {results === "no matches" ? (
               <NoMatches>Couldn't find any matches</NoMatches>
             ) : (
+              results &&
               results.items &&
               results.items.map((result) => (
                 <ResultsWrapper>
-                  {result.album && (
+                  {result.album && result.album.images[2] && (
                     <ResultImage
                       alt="Album Cover"
                       src={result.album.images[2].url}
@@ -120,9 +134,7 @@ const SearchBar = () => {
   );
 };
 
-const Wrapper = styled.div`
-  padding-left: 10px;
-`;
+const Wrapper = styled.div``;
 const SearchWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -139,6 +151,7 @@ const SearchResults = styled.div`
   border-color: grey;
   position: absolute;
   padding: 10px;
+  z-index: 100;
 `;
 
 const NoMatches = styled.div``;

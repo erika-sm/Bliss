@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "animate.css";
 import styled, { keyframes } from "styled-components";
 

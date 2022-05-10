@@ -9,6 +9,27 @@ export const AppProvider = ({ children }) => {
   const [creatingPlaylist, setCreatingPlaylist] = useState(false);
   const [currentUser, setCurrentUser] = useState();
   const [selectedTab, setSelectedTab] = useState("topItems");
+  const [accessToken, setAccessToken] = useState();
+  const [refreshToken, setRefreshToken] = useState();
+
+  useEffect(async () => {
+    const token = await fetch("/api/token");
+    const parsedToken = await token.json();
+
+    console.log(parsedToken);
+
+    setAccessToken(parsedToken.data.access_token);
+    setRefreshToken(parsedToken.data.refresh_token);
+  }, []);
+
+  console.log(refreshToken);
+
+  const refresh = async () => {
+    const refreshT = await fetch(`/api/refreshToken/?refresh=${refreshToken}`);
+    const refreshedToken = await refreshT.json();
+    console.log(refreshedToken);
+    setAccessToken(refreshedToken.data.access_token);
+  };
 
   const recommendationSliderArray = [
     {
@@ -89,19 +110,31 @@ export const AppProvider = ({ children }) => {
   ];
 
   const getCurrentUser = async () => {
-    const token = await fetch("/api/token");
-    const parsedToken = await token.json();
-
     const userData = await fetch(`https://api.spotify.com/v1/me`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${parsedToken.data.access_token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     const userJson = await userData.json();
 
-    setCurrentUser(userJson.id);
+    if (userJson.error) {
+      await refresh();
+
+      const userData = await fetch(`https://api.spotify.com/v1/me`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const userJson = await userData.json();
+
+      setCurrentUser(userJson);
+    } else {
+      setCurrentUser(userJson.id);
+    }
   };
 
   useEffect(() => {
@@ -113,8 +146,10 @@ export const AppProvider = ({ children }) => {
       setGreeting("Good evening");
     }
 
-    getCurrentUser();
-  }, []);
+    if (accessToken && refreshToken) {
+      getCurrentUser();
+    }
+  }, [accessToken]);
 
   let itemLimit = [];
 
@@ -123,38 +158,44 @@ export const AppProvider = ({ children }) => {
   }
 
   const createPlaylist = async (currentUser, initialData, playlistTrackIds) => {
-    const token = await fetch("/api/token");
-    const parsedToken = await token.json();
-
     const playlistData = await fetch(
       `https://api.spotify.com/v1/users/${currentUser}/playlists`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${parsedToken.data.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(initialData),
       }
     );
 
-    const response = await playlistData.json();
+    let response = await playlistData.json();
 
-    const addTracks = await fetch(
-      `https://api.spotify.com/v1/playlists/${response.id}/tracks`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${parsedToken.data.access_token}`,
-        },
-        body: JSON.stringify(playlistTrackIds),
-      }
-    );
+    if (response.error) {
+      const playlistData = await fetch(
+        `https://api.spotify.com/v1/users/${currentUser}/playlists`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(initialData),
+        }
+      );
 
-    const tracksResponse = await addTracks.json();
+      response = await playlistData.json();
+    }
 
-    console.log(tracksResponse);
+    await fetch(`https://api.spotify.com/v1/playlists/${response.id}/tracks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(playlistTrackIds),
+    });
   };
 
   return (
@@ -170,6 +211,9 @@ export const AppProvider = ({ children }) => {
         recommendationSliderArray,
         selectedTab,
         setSelectedTab,
+        accessToken,
+        refresh,
+        refreshToken,
       }}
     >
       {children}
