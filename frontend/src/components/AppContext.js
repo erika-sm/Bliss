@@ -11,18 +11,16 @@ export const AppProvider = ({ children }) => {
   const [selectedTab, setSelectedTab] = useState("topItems");
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
+  const [trackToPlay, setTrackToPlay] = useState();
+  const [playing, setPlaying] = useState(false);
 
   useEffect(async () => {
     const token = await fetch("/api/token");
     const parsedToken = await token.json();
 
-    console.log(parsedToken);
-
     setAccessToken(parsedToken.data.access_token);
     setRefreshToken(parsedToken.data.refresh_token);
   }, []);
-
-  console.log(refreshToken);
 
   const refresh = async () => {
     const refreshT = await fetch(`/api/refreshToken/?refresh=${refreshToken}`);
@@ -33,7 +31,7 @@ export const AppProvider = ({ children }) => {
 
   const recommendationSliderArray = [
     {
-      name: "Target Energy",
+      name: "Energy",
       min: 0,
       max: 1,
       step: 0.05,
@@ -46,9 +44,11 @@ export const AppProvider = ({ children }) => {
       lowSaturation: 100,
       highSaturation: 100,
       medSaturation: 100,
+      description:
+        "Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. ",
     },
     {
-      name: "Target Danceability",
+      name: "Danceability",
       min: 0,
       max: 1,
       step: 0.05,
@@ -61,9 +61,11 @@ export const AppProvider = ({ children }) => {
       lowSaturation: 45,
       highSaturation: 100,
       medSaturation: 42,
+      description:
+        "Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.",
     },
     {
-      name: "Target Acousticness",
+      name: "Acousticness",
       min: 0,
       max: 1,
       step: 0.05,
@@ -76,9 +78,11 @@ export const AppProvider = ({ children }) => {
       lowSaturation: 100,
       highSaturation: 100,
       medSaturation: 58,
+      description:
+        "A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.",
     },
     {
-      name: "Target Valence",
+      name: "Valence",
       min: 0,
       max: 1,
       step: 0.05,
@@ -91,9 +95,11 @@ export const AppProvider = ({ children }) => {
       lowSaturation: 50,
       highSaturation: 100,
       medSaturation: 89,
+      description:
+        "A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).",
     },
     {
-      name: "Target Tempo",
+      name: "Tempo",
       min: 40,
       max: 240,
       step: 10,
@@ -106,6 +112,8 @@ export const AppProvider = ({ children }) => {
       lowSaturation: 77,
       highSaturation: 55,
       medSaturation: 55,
+      description:
+        "The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.",
     },
   ];
 
@@ -131,7 +139,7 @@ export const AppProvider = ({ children }) => {
 
       const userJson = await userData.json();
 
-      setCurrentUser(userJson);
+      setCurrentUser(userJson.id);
     } else {
       setCurrentUser(userJson.id);
     }
@@ -145,10 +153,10 @@ export const AppProvider = ({ children }) => {
     } else if (currentTime >= 17 || currentTime < 5) {
       setGreeting("Good evening");
     }
+  }, [accessToken]);
 
-    if (accessToken && refreshToken) {
-      getCurrentUser();
-    }
+  useEffect(() => {
+    getCurrentUser();
   }, [accessToken]);
 
   let itemLimit = [];
@@ -214,6 +222,12 @@ export const AppProvider = ({ children }) => {
         accessToken,
         refresh,
         refreshToken,
+        trackToPlay,
+        setTrackToPlay,
+        trackToPlay,
+        setTrackToPlay,
+        playing,
+        setPlaying,
       }}
     >
       {children}

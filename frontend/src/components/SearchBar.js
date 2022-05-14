@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
-import LoadingSpinner from "./LoadingSpinner";
+import PlayButton from "./PlayButton";
 
 const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
   const [loading, setLoading] = useState(false);
-  const [searchType, setSearchType] = useState("artist");
+  const [searchType, setSearchType] = useState("track");
   const [searchTerms, setSearchTerms] = useState("");
   const [results, setResults] = useState();
 
-  const { accessToken } = useContext(AppContext);
+  const { accessToken, trackToPlay, setTrackToPlay, playing, setPlaying } =
+    useContext(AppContext);
 
   const getSearchedItems = async () => {
     setLoading(true);
@@ -66,8 +67,8 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
             setSearchTerms("");
           }}
         >
-          <option value={"artist"}>Artist</option>
           <option value={"track"}>Track</option>
+          <option value={"artist"}>Artist</option>
         </select>
         <Search
           value={searchTerms}
@@ -83,20 +84,44 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
             results &&
             results.items &&
             results.items.map((result) => (
-              <ResultsWrapper
-                onClick={() => {
-                  addSelectedItems(result);
-                  setSearchTerms("");
-                  setAddItem(!addItem);
-                }}
-              >
-                {result.images && result.images[0] && result && (
-                  <ResultImage alt="Artist Image" src={result.images[0].url} />
-                )}
-                <ItemDetails>
-                  <ArtistName> {result.name}</ArtistName>
-                </ItemDetails>
-              </ResultsWrapper>
+              <ResultContainer>
+                <div
+                  onClick={() => {
+                    if (
+                      playing === true &&
+                      trackToPlay === `spotify:artist:${result.id}`
+                    ) {
+                      setPlaying(false);
+                    } else if (
+                      trackToPlay === `spotify:artist:${result.id}` &&
+                      !playing
+                    ) {
+                      setPlaying(true);
+                    } else {
+                      setTrackToPlay(`spotify:artist:${result.id}`);
+                    }
+                  }}
+                >
+                  <PlayButton />
+                </div>
+                <ResultsWrapper
+                  onClick={() => {
+                    addSelectedItems(result);
+                    setSearchTerms("");
+                    setAddItem(!addItem);
+                  }}
+                >
+                  {result.images && result.images[0] && result && (
+                    <ResultImage
+                      alt="Artist Image"
+                      src={result.images[0].url}
+                    />
+                  )}
+                  <ItemDetails>
+                    <ArtistName> {result.name}</ArtistName>
+                  </ItemDetails>
+                </ResultsWrapper>
+              </ResultContainer>
             ))
           )}{" "}
         </SearchResults>
@@ -110,21 +135,48 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
               results &&
               results.items &&
               results.items.map((result) => (
-                <ResultsWrapper>
-                  {result.album && result.album.images[2] && (
-                    <ResultImage
-                      alt="Album Cover"
-                      src={result.album.images[2].url}
-                    />
-                  )}
+                <ResultContainer>
+                  <div
+                    onClick={() => {
+                      if (
+                        playing === true &&
+                        trackToPlay === `spotify:track:${result.id}`
+                      ) {
+                        setPlaying(false);
+                      } else if (
+                        trackToPlay === `spotify:track:${result.id}` &&
+                        !playing
+                      ) {
+                        setPlaying(true);
+                      } else {
+                        setTrackToPlay(`spotify:track:${result.id}`);
+                      }
+                    }}
+                  >
+                    <PlayButton />
+                  </div>
+                  <ResultsWrapper
+                    onClick={() => {
+                      addSelectedItems(result);
+                      setSearchTerms("");
+                      setAddItem(!addItem);
+                    }}
+                  >
+                    {result.album && result.album.images[2] && (
+                      <ResultImage
+                        alt="Album Cover"
+                        src={result.album.images[2].url}
+                      />
+                    )}
 
-                  <ItemDetails>
-                    <TrackName>{result.name}</TrackName>
-                    <ArtistName>
-                      {result.artists && result.artists[0].name}
-                    </ArtistName>
-                  </ItemDetails>
-                </ResultsWrapper>
+                    <ItemDetails>
+                      <TrackName>{result.name}</TrackName>
+                      <ArtistName>
+                        {result.artists && result.artists[0].name}
+                      </ArtistName>
+                    </ItemDetails>
+                  </ResultsWrapper>
+                </ResultContainer>
               ))
             )}{" "}
           </SearchResults>
@@ -176,6 +228,10 @@ const TrackName = styled.div``;
 const ArtistName = styled.div``;
 
 const ResultsWrapper = styled.div`
+  display: flex;
+`;
+
+const ResultContainer = styled.div`
   display: flex;
 `;
 

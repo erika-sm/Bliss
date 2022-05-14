@@ -16,8 +16,8 @@ const Header = () => {
           Top Items
         </PageTab>{" "}
         <PageTab
-          style={{ borderBottom: selectedTab === "recommendations" && "solid" }}
-          onClick={() => setSelectedTab("recommendations")}
+          style={{ borderBottom: selectedTab === "discover" && "solid" }}
+          onClick={() => setSelectedTab("discover")}
         >
           {" "}
           Discover

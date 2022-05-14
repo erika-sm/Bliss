@@ -1,163 +1,218 @@
-import React, { useContext, useEffect, useState } from "react";
-import Slider from "./Slider";
-import { AppContext } from "./AppContext";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import Header from "./Header";
-import SeedSelection from "./SeedSelection";
+import Orb from "./Orb";
+import { orbLightness } from "./Utils";
+import SongFeaturesTooltip from "./SongFeaturesTooltip";
+import PlaylistModal from "./PlaylistModal";
+import { AppContext } from "./AppContext";
+import PlayButton from "./PlayButton";
 
-const Recommendations = () => {
-  const { recommendationSliderArray, accessToken, refresh } =
-    useContext(AppContext);
-  const [step, setStep] = useState("intro");
-  const [loading, setLoading] = useState(false);
-  const [recommendationSeed, setRecommendationSeed] = useState();
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [addItem, setAddItem] = useState();
+const Recommendations = ({
+  recommendations,
+  recommendationsFeatures,
+  recommendationsIds,
+}) => {
+  const [isHovered, setIsHovered] = useState();
 
-  console.log(selectedItems.length);
+  const {
+    creatingPlaylist,
+    setCreatingPlaylist,
+    trackToPlay,
+    setTrackToPlay,
+    playing,
+    setPlaying,
+  } = useContext(AppContext);
 
   return (
-    <Wrapper>
-      <Header />
-      <ContentWrapper>
-        <TitleHeader> Discover</TitleHeader>
-        {step === "intro" && (
-          <>
-            <Intro>
-              {" "}
-              Take full advantage of Spotify's toolset to obtain track or artist
-              recommendations based on specific criteria that YOU choose.
-            </Intro>
-
-            <GetStarted onClick={() => setStep("itemsSelection")}>
-              <GetStartedText>Get Started</GetStartedText>
-            </GetStarted>
-          </>
-        )}
-        {step === "itemsSelection" && (
-          <>
-            <SeedSelection
-              selectedItems={selectedItems}
-              setSelectedItems={setSelectedItems}
-              addItem={addItem}
-              setAddItem={setAddItem}
-            />
-            <NavWrapper>
-              <Nav onClick={() => setStep("intro")}>
-                <div className="navButtons"> &#8249; </div>
-              </Nav>
-              {selectedItems.length > 0 && (
-                <Nav onClick={() => setStep("sliders")}>
-                  <div className="navButtons"> &#8250; </div>
-                </Nav>
-              )}
-            </NavWrapper>
-          </>
-        )}
-        {step === "sliders" && (
-          <>
-            <p>
-              {" "}
-              Next, select the sliders that you wish to modify. These sliders
-              will determine the feel of your recommendations.
-            </p>
-            {recommendationSliderArray.map((slider) => (
-              <Slider
-                key={slider.name}
-                name={slider.name}
-                min={slider.min}
-                max={slider.max}
-                step={slider.step}
-                highHue={slider.highHue}
-                lowHue={slider.lowHue}
-                medHue={slider.medHue}
-                defaultValue={slider.defaultValue}
-                hue={slider.hue}
-                defaultLightness={slider.defaultLightness}
-                colorRange={slider.colorRange}
-                lowSaturation={slider.lowSaturation}
-                highSaturation={slider.highSaturation}
-                medSaturation={slider.medSaturation}
-              />
-            ))}
-
-            <NavWrapper>
-              <Nav onClick={() => setStep("itemsSelection")}>
-                <div className="navButtons"> &#8249; </div>
-              </Nav>
-              <Nav onClick={() => setStep("summary")}>
-                <div className="navButtons"> &#8250; </div>
-              </Nav>
-            </NavWrapper>
-          </>
-        )}
-        {step === "summary" && (
-          <>
-            <div>Summary</div>
-            <NavWrapper>
-              <Nav onClick={() => setStep("sliders")}>
-                Previous
-                <div className="navButtons"> &#8249; </div>
-              </Nav>
-            </NavWrapper>
-          </>
-        )}
-      </ContentWrapper>
-    </Wrapper>
+    <div style={{ overflow: creatingPlaylist ? "hidden" : "auto" }}>
+      <PlaylistModal itemId={recommendationsIds} />
+      Your Recommendations
+      <PlaylistButtonWrapper
+        onClick={(e) => {
+          e.stopPropagation();
+          setCreatingPlaylist(true);
+        }}
+      >
+        Add these tracks to a playlist +
+      </PlaylistButtonWrapper>
+      <ItemsWrapper>
+        {recommendations.map((track) => (
+          <TopTracks key={track.id}>
+            <div
+              onClick={() => {
+                if (
+                  playing === true &&
+                  trackToPlay === `spotify:track:${track.id}`
+                ) {
+                  setPlaying(false);
+                } else if (
+                  trackToPlay === `spotify:track:${track.id}` &&
+                  !playing
+                ) {
+                  setPlaying(true);
+                } else {
+                  setTrackToPlay(`spotify:track:${track.id}`);
+                }
+              }}
+            >
+              <PlayButton />
+            </div>
+            <AlbumCover alt="Album cover" src={track.album.images[2].url} />
+            <ItemDetails>
+              <TrackName>{track.name}</TrackName>
+              <ArtistName>{track.artists[0].name}</ArtistName>
+              <OrbContainer
+                onMouseOver={() => setIsHovered(track.id)}
+                onTouchStart={() => setIsHovered(track.id)}
+                onMouseOut={() => setIsHovered("")}
+                onTouchEnd={() => setIsHovered("")}
+              >
+                {recommendationsFeatures &&
+                  recommendationsFeatures.length > 1 &&
+                  recommendationsFeatures.map(
+                    (feature) =>
+                      feature.id === track.id && (
+                        <Orb
+                          key={feature.id}
+                          energy={orbLightness("energy", feature.energy)}
+                          danceability={orbLightness(
+                            "danceability",
+                            feature.danceability
+                          )}
+                          acousticness={orbLightness(
+                            "acousticness",
+                            feature.acousticness
+                          )}
+                          valence={orbLightness("valence", feature.valence)}
+                          tempo={orbLightness("tempo", feature.tempo)}
+                        />
+                      )
+                  )}
+                {recommendationsFeatures &&
+                  recommendationsFeatures.length > 1 &&
+                  recommendationsFeatures.map(
+                    (feature) =>
+                      feature.id === track.id &&
+                      isHovered === track.id && (
+                        <SongFeaturesTooltip
+                          energy={feature.energy}
+                          energyColors={orbLightness("energy", feature.energy)}
+                          danceability={feature.danceability}
+                          danceabilityColors={orbLightness(
+                            "danceability",
+                            feature.danceability
+                          )}
+                          acousticness={feature.acousticness}
+                          acousticnessColors={orbLightness(
+                            "acousticness",
+                            feature.acousticness
+                          )}
+                          valence={feature.valence}
+                          valenceColors={orbLightness(
+                            "valence",
+                            feature.valence
+                          )}
+                          tempo={feature.tempo}
+                          tempoColors={orbLightness("tempo", feature.tempo)}
+                        />
+                      )
+                  )}
+              </OrbContainer>
+            </ItemDetails>
+          </TopTracks>
+        ))}
+      </ItemsWrapper>
+    </div>
   );
 };
 
 const Wrapper = styled.div`
-  touch-action: none;
   margin-top: 90px;
 `;
 
-const Intro = styled.p`
-  text-align: center;
-  padding: 10px;
-  font-size: 20px;
+const TopArtists = styled.div``;
+const TopTracks = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 const TitleHeader = styled.h1`
   text-align: center;
-  background-color: purple;
+  background-color: blue;
   padding: 15px;
 `;
-const ContentWrapper = styled.div``;
 
-const GetStarted = styled.div`
-  border: solid;
-  border-radius: 5px;
-  padding: 5px;
-  text-align: center;
+const Select = styled.select`
+  background-color: black;
+  color: white;
+  border: none;
+  margin-right: 5px;
+  margin-left: 5px;
   font-size: 15px;
-  width: 250px;
-  height: 80px;
-  font-size: 25px;
+`;
+
+const SpinnerWrapper = styled.div`
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const TopItemsContainer = styled.div`
+  padding-top: 30px;
+`;
+
+const Filter = styled.div`
+  background-color: black;
+  margin-top: -20px;
+  padding-top: 10px;
+  width: 100vw;
   display: flex;
   justify-content: center;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%);
-  position: absolute;
+  z-index: 100;
 `;
 
-const GetStartedText = styled.p`
-  position: absolute;
-`;
+const PlaylistButtonWrapper = styled.div`
+  font-size: 18px;
 
-const NavWrapper = styled.div`
-  position: absolute;
-
-  display: flex;
-  justify-content: space-between;
-  left: 50%;
-  transform: translateX(-40%);
-  bottom: 0;
-`;
-
-const Nav = styled.div`
-  margin-right: 50px;
+  border-bottom: solid;
+  border-top: solid;
   text-align: center;
+  margin-top: 10px;
 `;
+
+const AddTracksButton = styled.button`
+  margin-left: 5px;
+  position: absolute;
+  margin-top: -5px;
+`;
+
+const OrbContainer = styled.div`
+  display: flex;
+  height: 30px;
+  width: 30px;
+`;
+
+const AlbumCover = styled.img`
+  height: 70px;
+  width: 70px;
+`;
+
+const TrackName = styled.div``;
+
+const ArtistName = styled.div``;
+
+const ItemDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ItemsWrapper = styled.div`
+  margin-top: 30px;
+  display: block;
+  overflow: auto;
+  height: 470px;
+`;
+
 export default Recommendations;

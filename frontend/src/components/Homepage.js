@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
-import Recommendations from "./Recommendations";
+import Discover from "./Discover";
 import TopItems from "./TopItems";
 import Profile from "./Profile";
 import { AppContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
+import Player from "./Player";
 
 const Homepage = () => {
   const { selectedTab } = useContext(AppContext);
@@ -23,18 +24,19 @@ const Homepage = () => {
     <Wrapper>
       {selectedTab === "topItems" ? (
         <TopItems />
-      ) : selectedTab === "recommendations" ? (
-        <Recommendations />
+      ) : selectedTab === "discover" ? (
+        <Discover />
       ) : (
         selectedTab === "profile" && <Profile />
       )}
+      <Player />
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  height: 100%;
   width: 100%;
+  height: 50vh;
 `;
 
 export default Homepage;

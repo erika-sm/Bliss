@@ -14,7 +14,7 @@ router.get("/api/login", (req, res) => {
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
     scope:
-      "user-top-read, playlist-modify-public, playlist-modify-private, user-read-recently-played",
+      "user-top-read, playlist-modify-public, playlist-modify-private, user-read-recently-played, streaming, user-read-email, user-read-private, user-read-playback-state, user-modify-playback-state, user-library-read, user-library-modify",
   }).toString();
 
   res.redirect(`https://accounts.spotify.com/authorize?${params}`);

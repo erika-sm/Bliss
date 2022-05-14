@@ -10,18 +10,22 @@ const Slider = ({
   highHue,
   lowHue,
   medHue,
-  hue,
   defaultLightness,
   colorRange,
   lowSaturation,
   highSaturation,
   medSaturation,
+  description,
+  setCheckedFeatures,
+  checkedFeatures,
+  featureValues,
+  setFeatureValues,
 }) => {
   const [counter, setCounter] = useState(defaultValue);
   const [lightness, setLightness] = useState(defaultLightness);
   const [currentValue, setCurrentValue] = useState(counter);
 
-  console.log(highHue);
+  console.log(counter);
 
   useEffect(() => {
     if (counter > currentValue) {
@@ -31,16 +35,23 @@ const Slider = ({
     }
 
     setCurrentValue(counter);
+
+    setCheckedFeatures({
+      ...checkedFeatures,
+      [name]: counter,
+    });
+    setFeatureValues({
+      ...featureValues,
+      [name]: `&target_${name.toLowerCase()}=${counter}`,
+    });
   }, [counter]);
 
   return (
     <Wrapper>
       <>
-        {name === "Target Tempo" ? (
+        {name === "Tempo" ? (
           <>
-            <Title>
-              {name} <div className="helpTip">?</div>
-            </Title>
+            <Title>{description}</Title>
             <FeatureWrapper>
               <div className="slidecontainer">
                 <SliderContainer>
@@ -82,12 +93,11 @@ const Slider = ({
                 )
               )}
             </FeatureWrapper>
+            Target {name}: {counter}
           </>
         ) : (
           <>
-            <Title>
-              {name} <div className="helpTip">?</div>
-            </Title>
+            <Title>{description}</Title>
             <FeatureWrapper>
               <div className="slidecontainer">
                 <SliderContainer>
@@ -129,6 +139,7 @@ const Slider = ({
                 )
               )}
             </FeatureWrapper>
+            Target {name}: {counter}
           </>
         )}
       </>
@@ -138,26 +149,32 @@ const Slider = ({
 
 const SliderBar = styled.input`
   width: 210px;
+  margin-left: 5px;
+  margin-right: 5px;
 `;
 
 const SliderContainer = styled.div`
   display: flex;
+  margin-top: 10px;
 `;
 
 const Title = styled.div`
   margin-bottom: -10px;
   display: flex;
+  font-size: 14px;
 `;
 
 const Wrapper = styled.div`
   padding: 10px;
+  font-size: 16px;
+  border-bottom: solid;
 `;
 
 const Circle = styled.div`
   height: 40px;
   width: 40px;
   margin-left: 10px;
-  margin-top: 5px;
+  margin-top: 20px;
   border: solid;
   border-color: white;
   border-radius: 50%;

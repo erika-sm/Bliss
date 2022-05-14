@@ -2,7 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
-import LoadingSpinner from "./LoadingSpinner";
+
+import PlayButton from "./PlayButton";
 
 const SeedSelection = ({
   selectedItems,
@@ -16,7 +17,16 @@ const SeedSelection = ({
 
   console.log("text", selectedItems);
 
-  const { accessToken, refreshToken, refresh } = useContext(AppContext);
+  const {
+    accessToken,
+    refreshToken,
+    refresh,
+    playing,
+    setPlay,
+    setTrackToPlay,
+    trackToPlay,
+    setPlaying,
+  } = useContext(AppContext);
 
   const addSelectedItems = (e) => {
     if (selectedItems.length < 5) {
@@ -118,7 +128,6 @@ const SeedSelection = ({
   return (
     <SeedWrapper>
       <Description>
-        {" "}
         Search or select between 1 and 5 items from your top recently played
         tracks and artists. This will be the foundation of your recommendations.
       </Description>
@@ -155,7 +164,24 @@ const SeedSelection = ({
                   }
                 }}
               >
-                <Images src={item.track.album.images[2].url} />
+                <Images
+                  onClick={() => {
+                    if (
+                      playing === true &&
+                      trackToPlay === `spotify:track:${item.track.id}`
+                    ) {
+                      setPlaying(false);
+                    } else if (
+                      trackToPlay === `spotify:track:${item.track.id}` &&
+                      !playing
+                    ) {
+                      setPlaying(true);
+                    } else {
+                      setTrackToPlay(`spotify:track:${item.track.id}`);
+                    }
+                  }}
+                  src={item.track.album.images[2].url}
+                />
                 <ItemNames>
                   <div>{item.track.name}</div>
                   <div>{item.track.artists[0].name}</div>
@@ -221,9 +247,8 @@ const SeedSelection = ({
             )}
         </ol>
         {selectedItems.length > 0 && (
-          <div>
-            {" "}
-            Move to the next page once you're happy with your selections!
+          <div style={{ fontSize: "11px" }}>
+            Move to the next page once you've completed your selections!
           </div>
         )}
       </SelectedItems>
@@ -260,14 +285,18 @@ const TopArtists = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 20px;
+  margin-right: 20px;
 `;
 
 const SelectedItems = styled.div`
   position: absolute;
-  left: 50%;
+  left: 47%;
   transform: translateX(-50%);
   margin-top: -20px;
   text-align: left;
+  display: block;
+  overflow: auto;
+  height: 75px;
 `;
 
 const Selections = styled.h3`

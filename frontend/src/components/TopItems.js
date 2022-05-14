@@ -7,20 +7,16 @@ import Header from "./Header";
 import Orb from "./Orb";
 import { orbLightness } from "./Utils";
 import SongFeaturesTooltip from "./SongFeaturesTooltip";
-
+import PlayButton from "./PlayButton";
 const TopItems = () => {
   const [timeRange, setTimeRange] = useState("short_term");
   const [topItems, setTopItems] = useState("");
-  const [item, setItem] = useState("artists");
+  const [item, setItem] = useState("tracks");
   const [limit, setLimit] = useState(20);
   const [loading, setLoading] = useState(false);
   const [itemId, setItemId] = useState([]);
   const [itemFeatures, setItemFeatures] = useState([]);
   const [isHovered, setIsHovered] = useState();
-
-  console.log(itemFeatures);
-
-  console.log(topItems);
 
   const {
     itemLimit,
@@ -29,12 +25,18 @@ const TopItems = () => {
     accessToken,
     refresh,
     refreshToken,
+    trackToPlay,
+    setTrackToPlay,
+    playing,
+    setPlaying,
   } = useContext(AppContext);
+
+  console.log(playing);
+  console.log(trackToPlay);
 
   const getTopItems = async () => {
     setLoading(true);
     if (accessToken && refreshToken) {
-      console.log("hello");
       const data = await fetch(
         `https://api.spotify.com/v1/me/top/${item}?time_range=${timeRange}&limit=${limit}`,
         {
@@ -103,29 +105,14 @@ const TopItems = () => {
     getTopItems();
   }, [timeRange, item, limit, accessToken, refreshToken]);
 
-  //recommendations code
-  //   useEffect(async () => {
-  //     const data = await fetch(
-  //       `https://api.spotify.com/v1/recommendations/?seed_tracks=58r5Sc6rwLR3tGYBMbEWpK&target_energy=0.8`,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-
-  //     const response = await data.json();
-
-  //     console.log(response);
-  //   }, []);
-
   return (
     <div>
       <Header />
+
       <PlaylistModal itemId={itemId} />
 
       <Wrapper>
+        <TitleHeader>Top Items</TitleHeader>
         <Filter>
           Your top{" "}
           <Select onChange={(e) => setLimit(e.target.value)} defaultValue={20}>
@@ -142,8 +129,8 @@ const TopItems = () => {
             }}
           >
             {" "}
-            <option value={"artists"}>artists</option>{" "}
             <option value={"tracks"}>tracks</option>
+            <option value={"artists"}>artists</option>{" "}
           </Select>{" "}
           of
           <Select onChange={(e) => setTimeRange(e.target.value)}>
@@ -163,21 +150,38 @@ const TopItems = () => {
             {" "}
             {topItems.items && item === "tracks" ? (
               <>
-                {!creatingPlaylist && (
-                  <PlaylistButtonWrapper>
-                    Add tracks to a playlist
-                    <AddTracksButton
+                <ItemsWrapper>
+                  {!creatingPlaylist && (
+                    <PlaylistButtonWrapper
                       onClick={(e) => {
                         e.stopPropagation();
                         setCreatingPlaylist(true);
                       }}
-                      className="playlist-button playlist-button--mobile"
-                    ></AddTracksButton>
-                  </PlaylistButtonWrapper>
-                )}
-                <ItemsWrapper>
+                    >
+                      Add tracks to a playlist +
+                    </PlaylistButtonWrapper>
+                  )}
                   {topItems.items.map((track) => (
                     <TopTracks key={track.id}>
+                      <div
+                        onClick={() => {
+                          if (
+                            playing === true &&
+                            trackToPlay === `spotify:track:${track.id}`
+                          ) {
+                            setPlaying(false);
+                          } else if (
+                            trackToPlay === `spotify:track:${track.id}` &&
+                            !playing
+                          ) {
+                            setPlaying(true);
+                          } else {
+                            setTrackToPlay(`spotify:track:${track.id}`);
+                          }
+                        }}
+                      >
+                        <PlayButton />
+                      </div>
                       <AlbumCover
                         alt="Album cover"
                         src={track.album.images[2].url}
@@ -185,6 +189,7 @@ const TopItems = () => {
                       <ItemDetails>
                         <TrackName>{track.name}</TrackName>
                         <ArtistName>{track.artists[0].name}</ArtistName>
+
                         <OrbContainer
                           onMouseOver={() => setIsHovered(track.id)}
                           onTouchStart={() => setIsHovered(track.id)}
@@ -261,11 +266,31 @@ const TopItems = () => {
               topItems.items &&
               item === "artists" &&
               topItems.items.map((artist) => (
-                <TopArtists key={artist.id}>
-                  {" "}
-                  <img alt="Artist image" src={artist.images[2].url} />{" "}
-                  {artist.name}{" "}
-                </TopArtists>
+                <>
+                  <TopArtists>
+                    <div
+                      onClick={() => {
+                        if (
+                          playing === true &&
+                          trackToPlay === `spotify:artist:${artist.id}`
+                        ) {
+                          setPlaying(false);
+                        } else if (
+                          trackToPlay === `spotify:artist:${artist.id}` &&
+                          !playing
+                        ) {
+                          setPlaying(true);
+                        } else {
+                          setTrackToPlay(`spotify:artist:${artist.id}`);
+                        }
+                      }}
+                    >
+                      <PlayButton />
+                    </div>{" "}
+                    <AlbumCover alt="Artist image" src={artist.images[2].url} />{" "}
+                    <Artist>{artist.name} </Artist>
+                  </TopArtists>
+                </>
               ))
             )}
           </TopItemsContainer>
@@ -279,11 +304,25 @@ const Wrapper = styled.div`
   margin-top: 90px;
 `;
 
-const TopArtists = styled.div``;
+const TopArtists = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+const Artist = styled.div`
+  margin-top: 35px;
+`;
 const TopTracks = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 20px;
+`;
+
+const TitleHeader = styled.h1`
+  text-align: center;
+  background-color: blue;
+  padding: 15px;
 `;
 
 const Select = styled.select`
@@ -304,11 +343,13 @@ const SpinnerWrapper = styled.div`
 
 const TopItemsContainer = styled.div`
   padding-top: 30px;
+  height: 520px;
+  display: block;
+  overflow: auto;
 `;
 
 const Filter = styled.div`
   background-color: black;
-  position: fixed;
   margin-top: -20px;
   padding-top: 10px;
   width: 100vw;
@@ -317,17 +358,17 @@ const Filter = styled.div`
   z-index: 100;
 `;
 
-const PlaylistButtonWrapper = styled.div`
-  font-size: 12px;
-  left: 50%;
-  transform: translateX(-60%);
-  position: absolute;
+const PlaylistButtonWrapper = styled.h3`
+  font-size: 18px;
+  margin-top: -20px;
+  margin-bottom: 10px;
+  border-bottom: solid;
+  border-top: solid;
+  text-align: center;
 `;
 
 const AddTracksButton = styled.button`
-  margin-left: 5px;
-  position: absolute;
-  margin-top: -5px;
+  text-align: center;
 `;
 
 const OrbContainer = styled.div`
@@ -351,7 +392,7 @@ const ItemDetails = styled.div`
 `;
 
 const ItemsWrapper = styled.div`
-  margin-top: 50px;
+  height: 100vh;
 `;
 
 export default TopItems;
