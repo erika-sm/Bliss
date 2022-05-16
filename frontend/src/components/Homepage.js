@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import Discover from "./Discover";
 import TopItems from "./TopItems";
-import Profile from "./Profile";
+import Social from "./Social";
 import { AppContext } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 import Player from "./Player";
@@ -27,7 +27,7 @@ const Homepage = () => {
       ) : selectedTab === "discover" ? (
         <Discover />
       ) : (
-        selectedTab === "profile" && <Profile />
+        selectedTab === "social" && <Social />
       )}
       <Player />
     </Wrapper>

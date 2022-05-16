@@ -4,7 +4,9 @@ const hpp = require("hpp");
 const session = require("cookie-session");
 const csurf = require("csurf");
 const helmet = require("helmet");
+
 const { generateRandomString } = require("./cookieGen");
+const { getUser, createUserProfile } = require("./handlers");
 
 const app = express();
 
@@ -21,6 +23,9 @@ app.use(
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
   })
 );
+
+app.get("/api/get-user/:username", getUser);
+app.post("/api/create-profile", createUserProfile);
 
 app.use(csurf());
 

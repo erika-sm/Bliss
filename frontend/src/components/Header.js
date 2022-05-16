@@ -23,10 +23,10 @@ const Header = () => {
           Discover
         </PageTab>{" "}
         <PageTab
-          style={{ borderBottom: selectedTab === "profile" && "solid" }}
-          onClick={() => setSelectedTab("profile")}
+          style={{ borderBottom: selectedTab === "social" && "solid" }}
+          onClick={() => setSelectedTab("social")}
         >
-          Profile
+          Social
         </PageTab>
       </PageSelection>
     </Wrapper>
