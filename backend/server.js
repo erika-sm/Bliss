@@ -6,7 +6,13 @@ const csurf = require("csurf");
 const helmet = require("helmet");
 
 const { generateRandomString } = require("./cookieGen");
-const { getUser, createUserProfile } = require("./handlers");
+const {
+  getUser,
+  createUserProfile,
+  getAllUsers,
+  deleteUser,
+  editUser,
+} = require("./handlers");
 
 const app = express();
 
@@ -26,6 +32,9 @@ app.use(
 
 app.get("/api/get-user/:username", getUser);
 app.post("/api/create-profile", createUserProfile);
+app.get("/api/get-all-users", getAllUsers);
+app.delete("/api/delete-user/:_id", deleteUser);
+app.patch("/api/edit-user", editUser);
 
 app.use(csurf());
 

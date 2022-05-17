@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Homepage from "./Homepage";
+import Main from "./Main";
 import Login from "./Login";
 import GlobalStyles from "./GlobalStyles";
 
@@ -10,7 +10,7 @@ const App = () => {
 
       <Routes>
         <Route exact path="/" element={<Login />} />
-        <Route path="/homepage" exact element={<Homepage />} />
+        <Route path="/main" exact element={<Main />} />
       </Routes>
     </Router>
   );

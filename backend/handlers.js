@@ -1,5 +1,6 @@
 const { MongoClient } = require("mongodb");
 const { UserProfileVal } = require("./userProfile");
+const ObjectId = require("mongodb").ObjectId;
 
 require("dotenv").config();
 
@@ -33,8 +34,6 @@ const getUser = async (req, res) => {
 const createUserProfile = async (req, res) => {
   const { displayName, profilePicture, itemsToDisplay, username } = req.body;
 
-  console.log(req.body);
-
   try {
     mongoose.connect(MONGO_URI, options);
     const createUser = await UserProfileVal.create({
@@ -43,8 +42,6 @@ const createUserProfile = async (req, res) => {
       itemsToDisplay,
       username,
     });
-
-    console.log(createUser);
 
     res.status(200).json({
       status: 200,
@@ -60,7 +57,78 @@ const createUserProfile = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const db = client.db("bliss");
+  const result = await db.collection("users").find().toArray();
+
+  if (result.length > 0) {
+    return res.status(200).json({
+      status: 200,
+      data: result,
+      message: "Successfully retrieved all users.",
+    });
+  } else {
+    return res.status(404).json({
+      status: 404,
+      message: `Unable to retrieve list of users.`,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const _id = req.params._id;
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const db = client.db("bliss");
+
+  const userId = await db.collection("users").findOne({ _id: ObjectId(_id) });
+
+  if (userId) {
+    await db.collection("users").deleteOne({ _id: ObjectId(_id) });
+
+    res.status(200).json({ status: 200, message: "User successfully deleted" });
+  } else {
+    res.status(404).json({ status: 404, message: "User could not be found " });
+  }
+};
+
+const editUser = async (req, res) => {
+  const itemsToUpdate = req.body;
+
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const db = client.db("bliss");
+
+  const update = await db
+    .collection("users")
+    .updateOne(
+      { _id: ObjectId(itemsToUpdate._id) },
+      { $set: { displayName: itemsToUpdate.displayName } }
+    );
+  if (update.modifiedCount !== 0) {
+    res.status(200).json({
+      message: "User information successfully updated.",
+      data: itemsToUpdate,
+    });
+  } else
+    res.state(400).json({
+      message: "Unable to update user information.",
+      data: itemsToUpdate,
+    });
+};
+
 module.exports = {
   getUser,
   createUserProfile,
+  getAllUsers,
+  deleteUser,
+  editUser,
 };

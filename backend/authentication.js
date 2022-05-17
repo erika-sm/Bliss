@@ -45,7 +45,7 @@ router.get("/api/callback", async (req, res) => {
 
   token = await data.json();
 
-  return res.redirect("/homepage");
+  return res.redirect("/main");
 });
 
 router.get("/api/token", (req, res) => {

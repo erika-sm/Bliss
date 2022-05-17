@@ -5,7 +5,7 @@ import { AppContext } from "./AppContext";
 import LoadingSpinner from "./LoadingSpinner";
 import SearchBar from "./SearchBar";
 
-const ProfileCreate = ({ setUserProfile }) => {
+const ProfileCreate = () => {
   const { currentUser } = useContext(AppContext);
   const [image, setImage] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);

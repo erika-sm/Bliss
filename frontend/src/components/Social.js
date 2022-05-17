@@ -2,38 +2,74 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import Header from "./Header";
 import { AppContext } from "./AppContext";
-import LoadingSpinner from "./LoadingSpinner";
-import SearchBar from "./SearchBar";
+
 import ProfileCreate from "./ProfileCreate";
-import UserProfile from "./UserProfile";
+import SocialHeader from "./SocialHeader";
+import AllUsers from "./AllUsers";
+import ProfileSettings from "./ProfileSettings";
+import MyProfile from "./MyProfile";
 
 const Social = () => {
   const { currentUser } = useContext(AppContext);
 
-  const [loading, setLoading] = useState(false);
-  const [userProfile, setUserProfile] = useState();
-
+  const [selectedTab, setSelectedTab] = useState("myProfile");
+  const [currentUserProfile, setCurrentUserProfile] = useState();
+  const [selectedUser, setSelectedUser] = useState(false);
   const getUser = async () => {
     const fetchUser = await fetch(`/api/get-user/${currentUser}`);
     const user = await fetchUser.json();
 
     if (user.status === 200) {
-      setUserProfile(user.data);
+      setCurrentUserProfile(user.data);
     }
   };
 
   useEffect(() => {
     getUser();
   }, [currentUser]);
+
   return (
     <Wrapper>
       <Header />
-      <TitleHeader>Social bliss</TitleHeader>
+      <TitleHeader>Social Bliss</TitleHeader>
 
-      {!userProfile ? (
-        <ProfileCreate setUserProfile={setUserProfile} />
+      {!currentUserProfile ? (
+        <ProfileCreate />
+      ) : selectedTab === "myProfile" ? (
+        <>
+          <SocialHeader
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+          <MyProfile
+            currentUser={currentUser}
+            currentUserProfile={currentUserProfile}
+          />
+        </>
+      ) : selectedTab === "allUsers" ? (
+        <>
+          {" "}
+          <SocialHeader
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+            setSelectedUser={setSelectedUser}
+          />
+          <AllUsers
+            setSelectedUser={setSelectedUser}
+            selectedUser={selectedUser}
+          />
+        </>
       ) : (
-        <UserProfile userProfile={userProfile} currentUser={currentUser} />
+        <>
+          <SocialHeader
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+          <ProfileSettings
+            setCurrentUserProfile={setCurrentUserProfile}
+            currentUserProfile={currentUserProfile}
+          />
+        </>
       )}
     </Wrapper>
   );
