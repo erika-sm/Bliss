@@ -10,13 +10,16 @@ const ProfileCreate = () => {
   const [image, setImage] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [addItem, setAddItem] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState();
+  const [error, setError] = useState();
 
   const [userDetails, setUserDetails] = useState({
     displayName: "",
     profilePicture: "",
-    itemsToDisplay: "",
+    itemsToDisplay: [],
     username: currentUser,
+    followers: [],
+    following: [],
   });
 
   const removeSelectedItems = (e) => {
@@ -70,8 +73,6 @@ const ProfileCreate = () => {
     );
     const picture = await uploadPic.json();
 
-    console.log(picture);
-
     setImage(picture.secure_url);
     setUserDetails({ ...userDetails, profilePicture: picture.secure_url });
 
@@ -90,7 +91,9 @@ const ProfileCreate = () => {
 
     const userFetch = await createUser.json();
 
-    console.log(userFetch);
+    if (userFetch.status === 400) {
+      setError("Please select 3 tracks and/or artists");
+    }
   };
 
   const handleProfileCreation = (e) => {
@@ -99,17 +102,19 @@ const ProfileCreate = () => {
   };
   return (
     <Wrapper>
-      <form onSubmit={handleProfileCreation}>
-        Enter a display name
-        <input
-          required
-          type="text"
-          value={userDetails.displayName}
-          onChange={(e) =>
-            setUserDetails({ ...userDetails, displayName: e.target.value })
-          }
-        />
-        <div>
+      <Form onSubmit={handleProfileCreation}>
+        <ItemContainer>
+          <div>Enter a display name</div>
+          <Input
+            required
+            type="text"
+            value={userDetails.displayName}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, displayName: e.target.value })
+            }
+          />
+        </ItemContainer>
+        <ItemContainer>
           <div>Upload a profile picture </div>
           <input
             required
@@ -119,12 +124,15 @@ const ProfileCreate = () => {
             onChange={uploadProfilePic}
           />
           {loading ? (
-            <LoadingSpinner />
+            <LoadingWrapper>
+              <LoadingSpinner />
+            </LoadingWrapper>
           ) : (
             !loading &&
             image && (
               <div>
-                <div
+                <RemoveItem
+                  style={{ marginRight: "20px" }}
                   onClick={() => {
                     setImage();
                     setUserDetails({
@@ -133,24 +141,28 @@ const ProfileCreate = () => {
                     });
                   }}
                 >
-                  X
+                  Remove
+                </RemoveItem>
+                <div>
+                  <ProfilePic src={image} />
                 </div>
-                <ProfilePic src={image} />
               </div>
             )
           )}
-        </div>
-        <div>
-          Select the 3 songs or artists that you're feeling the most at the
-          moment
-        </div>
-        <SearchBar
-          selectedItems={selectedItems}
-          addSelectedItems={addSelectedItems}
-          setAddItem={setAddItem}
-          addItem={addItem}
-        />
-        <ol>
+        </ItemContainer>
+        <SearchContainer>
+          <div>
+            Select the 3 songs or artists that you're feeling the most at the
+            moment
+          </div>
+          <Search onChange={() => setError()}>
+            <SearchBar
+              selectedItems={selectedItems}
+              addSelectedItems={addSelectedItems}
+              setAddItem={setAddItem}
+              addItem={addItem}
+            />
+          </Search>
           {selectedItems &&
             selectedItems.map((item) =>
               item.track ? (
@@ -179,14 +191,20 @@ const ProfileCreate = () => {
                 </ListItem>
               )
             )}
-        </ol>
-        <button>Submit</button>
-      </form>
+          <Error>{error}</Error>
+        </SearchContainer>
+        {selectedItems.length === 3 && <SubmitButton>Submit</SubmitButton>}
+      </Form>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: block;
+  overflow: auto;
+  height: 70vh;
+  width: 100vw;
+`;
 
 const ProfilePic = styled.img`
   height: 100px;
@@ -194,107 +212,64 @@ const ProfilePic = styled.img`
   border-radius: 50%;
 `;
 
-const SeedWrapper = styled.div`
-  text-align: center;
-  font-size: 14px;
-`;
-
-const Description = styled.p``;
-
-const SelectionWrapper = styled.div`
-  display: flex;
-  margin-top: 50px;
-  justify-content: space-around;
-  margin-left: 20px;
-`;
-
-const SearchBarWrapper = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
-const RecentPlays = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TopArtists = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  margin-right: 20px;
-`;
-
-const SelectedItems = styled.div`
-  position: absolute;
-  left: 47%;
-  transform: translateX(-50%);
-  margin-top: -20px;
-  text-align: left;
-  display: block;
-  overflow: auto;
-  height: 75px;
-`;
-
-const Selections = styled.h3`
-  border-top: solid;
-  border-bottom: solid;
-  border-color: white;
-`;
-
-const Images = styled.img`
-  height: 50px;
-  width: 50px;
-`;
-
-const RecentlyRefresh = styled.div`
-  display: flex;
-`;
-
-const ItemWrapper = styled.div`
-  display: flex;
-  font-size: 11px;
-  text-align: left;
-  margin-top: 5px;
-  margin-bottom: 10px;
-`;
-
-const ItemNames = styled.div`
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  width: 125px;
-`;
-
-const ArtistNames = styled.div`
-  margin-top: 20px;
-  margin-left: 5px;
-  font-size: 12px;
-`;
-
-const RefreshButton = styled.i`
-  margin-left: 5px;
-
-  &:active {
-    transform: rotate(90deg) scale(1.2);
-  }
-`;
-
 const RemoveItem = styled.div`
   color: red;
-
   font-size: 11px;
   text-align: right;
 `;
 
-const ListItem = styled.div`
+const Error = styled.div`
+  color: red;
+  margin-top: 10px;
+`;
+
+const ListItem = styled.ul`
   display: flex;
 `;
 
-const List = styled.li`
-  width: 250px;
+const Input = styled.input`
+  width: 50vw;
 `;
+
+const List = styled.div`
+  width: 250px;
+  margin-bottom: -10px;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+`;
+
+const Search = styled.div`
+  position: relative;
+  left: 60%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+`;
+
+const SubmitButton = styled.button`
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 40px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  height: 50vh;
+`;
+
+const ItemContainer = styled.div`
+  margin-bottom: 35px;
+`;
+
+const LoadingWrapper = styled.div``;
 
 export default ProfileCreate;

@@ -197,6 +197,7 @@ const TopItems = () => {
                           onMouseOut={() => setIsHovered("")}
                           onTouchEnd={() => setIsHovered("")}
                         >
+                          Mood:
                           {itemFeatures.length > 1 &&
                             itemFeatures.map(
                               (feature) =>
@@ -376,6 +377,7 @@ const OrbContainer = styled.div`
   display: flex;
   height: 30px;
   width: 30px;
+  margin-top: 5px;
 `;
 
 const AlbumCover = styled.img`

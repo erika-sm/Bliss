@@ -55,6 +55,7 @@ const Social = () => {
             setSelectedUser={setSelectedUser}
           />
           <AllUsers
+            currentUser={currentUser}
             setSelectedUser={setSelectedUser}
             selectedUser={selectedUser}
           />
@@ -83,7 +84,7 @@ const TitleHeader = styled.h1`
 
 const Wrapper = styled.div`
   margin-top: 90px;
-  height: 80vh;
+  height: 78vh;
 `;
 
 export default Social;

@@ -55,7 +55,7 @@ const SeedSelection = ({
     if (accessToken && refreshToken) {
       setLoading(true);
       const data = await fetch(
-        "https://api.spotify.com/v1/me/player/recently-played?limit=5",
+        "https://api.spotify.com/v1/me/player/recently-played?limit=3",
         {
           headers: {
             "Content-Type": "application/json",
@@ -71,7 +71,7 @@ const SeedSelection = ({
         await refresh();
 
         const data = await fetch(
-          "https://api.spotify.com/v1/me/player/recently-played?limit=5",
+          "https://api.spotify.com/v1/me/player/recently-played?limit=3",
           {
             headers: {
               "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const SeedSelection = ({
     if (accessToken && refreshToken) {
       console.log("hello");
       const data = await fetch(
-        `https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5`,
+        `https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=3`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const SeedSelection = ({
         await refresh();
 
         const data = await fetch(
-          `https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5`,
+          `https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=3`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -292,11 +292,10 @@ const SelectedItems = styled.div`
   position: absolute;
   left: 47%;
   transform: translateX(-50%);
-  margin-top: -20px;
+
   text-align: left;
   display: block;
   overflow: auto;
-  height: 75px;
 `;
 
 const Selections = styled.h3`

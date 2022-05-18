@@ -7,14 +7,22 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
+    required: true,
   },
   itemsToDisplay: {
     type: Array,
+    required: true,
   },
   username: {
     type: String,
     required: true,
     unique: true,
+  },
+  followers: {
+    type: Array,
+  },
+  following: {
+    type: Array,
   },
 });
 

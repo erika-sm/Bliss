@@ -48,7 +48,7 @@ const PageSelection = styled.div`
 
 const PageTab = styled.div`
   height: 20px;
-  margin-top: 10px;
+  margin-top: -10px;
   margin-right: 15px;
   border-color: white;
 

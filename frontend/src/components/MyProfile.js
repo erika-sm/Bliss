@@ -1,13 +1,21 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
+import PlayButton from "./PlayButton";
 
 const MyProfile = ({
   currentUserProfile,
   setCurrentUserProfile,
   currentUser,
 }) => {
-  const { accessToken } = useContext(AppContext);
+  const {
+    accessToken,
+
+    trackToPlay,
+    setTrackToPlay,
+    playing,
+    setPlaying,
+  } = useContext(AppContext);
   const [artists, setArtists] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [edit, setEdit] = useState(false);
@@ -60,18 +68,34 @@ const MyProfile = ({
 
   return (
     <Wrapper>
-      <ProfilePictureContainer>
-        <ProfilePicture src={currentUserProfile.profilePicture} />{" "}
-      </ProfilePictureContainer>
-
-      <DisplayNameContainer>
-        <DisplayName>{currentUserProfile.displayName}</DisplayName>{" "}
-      </DisplayNameContainer>
+      <ProfilePicture src={currentUserProfile.profilePicture} />{" "}
+      <DisplayName>{currentUserProfile.displayName}</DisplayName>{" "}
       <Vibes>
         <h2>My Vibes </h2>{" "}
-        {artists.length > 0 &&
+        {artists &&
+          artists.length > 0 &&
           artists.map((artist) => (
             <Vibe>
+              <div
+                onClick={() => {
+                  if (
+                    playing === true &&
+                    trackToPlay === `spotify:artist:${artist.id}`
+                  ) {
+                    setPlaying(false);
+                  } else if (
+                    trackToPlay === `spotify:artist:${artist.id}` &&
+                    !playing
+                  ) {
+                    setPlaying(true);
+                  } else {
+                    setTrackToPlay(`spotify:artist:${artist.id}`);
+                  }
+                }}
+              >
+                {" "}
+                <PlayButton />
+              </div>
               <VibeImg src={artist.images[2].url} />
               <VibeName>{artist.name}</VibeName>
             </Vibe>
@@ -79,14 +103,35 @@ const MyProfile = ({
         {tracks.length > 0 &&
           tracks.map((track) => (
             <Vibe>
+              <div
+                onClick={() => {
+                  if (
+                    playing === true &&
+                    trackToPlay === `spotify:track:${track.id}`
+                  ) {
+                    setPlaying(false);
+                  } else if (
+                    trackToPlay === `spotify:track:${track.id}` &&
+                    !playing
+                  ) {
+                    setPlaying(true);
+                  } else {
+                    setTrackToPlay(`spotify:track:${track.id}`);
+                  }
+                }}
+              >
+                {" "}
+                <PlayButton />
+              </div>
+
               <VibeImg src={track.album.images[2].url} />
-              <VibeName>{track.name}</VibeName>
+              <VibeName>
+                {track.name} by {track.artists[0].name}
+              </VibeName>
             </Vibe>
           ))}
       </Vibes>
-      <ButtonWrapper>
-        <Button>Edit</Button>
-      </ButtonWrapper>
+      <Button>Edit</Button>
     </Wrapper>
   );
 };
@@ -95,24 +140,22 @@ const ProfilePicture = styled.img`
   border-radius: 50%;
   height: 150px;
   width: 150px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
-const ProfilePictureContainer = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 26%;
-`;
 const Vibes = styled.div`
   text-align: center;
-  position: absolute;
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
-  top: 53%;
+  width: 90vw;
 `;
 
 const Vibe = styled.div`
   display: flex;
+  margin-top: -5px;
   text-align: center;
 `;
 
@@ -126,26 +169,38 @@ const VibeName = styled.p`
 `;
 const DisplayName = styled.h2``;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 
-const DisplayNameContainer = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-70%);
-  top: 45%;
+  text-align: center;
+  height: 55vh;
+  position: fixed;
+  width: 100vw;
+  margin-top: -20px;
 `;
 
-const ButtonWrapper = styled.div`
-  position: absolute;
-  top: 85vh;
+const Follows = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-right: 15px;
+  text-align: center;
+  margin-left: 10px;
+`;
+
+const FollowsContainer = styled.div`
+  display: flex;
+  position: relative;
+  left: 50%;
+  transform: translateX(-25%);
+`;
+
+const Button = styled.button`
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
-`;
-
-const Button = styled.div`
-  background: black;
-  border: none;
-  color: red;
+  width: 50vw;
+  margin-top: 40px;
 `;
 
 export default MyProfile;

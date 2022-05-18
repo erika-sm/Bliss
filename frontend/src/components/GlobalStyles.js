@@ -13,6 +13,15 @@ export default createGlobalStyle`
   
     }
 
+     button{
+           font-family: 'Montserrat', sans-serif;
+        background-color: black;
+        color: white;
+        border: solid;
+        border-color: white;
+        padding: 5px;
+     }
+
  .greetingMorning {
     background: #FF5F6D;  
     background: -webkit-linear-gradient(to right, #FFC371, #FF5F6D); 

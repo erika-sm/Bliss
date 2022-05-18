@@ -67,6 +67,7 @@ const Recommendations = ({
                 onMouseOut={() => setIsHovered("")}
                 onTouchEnd={() => setIsHovered("")}
               >
+                Mood:
                 {recommendationsFeatures &&
                   recommendationsFeatures.length > 1 &&
                   recommendationsFeatures.map(

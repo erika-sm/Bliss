@@ -28,10 +28,10 @@ const Orb = ({ energy, danceability, acousticness, valence, tempo }) => {
 
 const Circle = styled.div`
   border-radius: 50%;
-
+  margin-top: -5px;
   height: 30px;
   width: 30px;
-
+  margin-left: 5px;
   background-color: ${(props) =>
     `hsla(${props.energyHue}, ${props.energySaturation}%, ${props.energyLightness}%, 1)`};
   background-image: ${(props) => `radial-gradient(

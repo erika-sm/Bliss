@@ -32,7 +32,14 @@ const getUser = async (req, res) => {
 };
 
 const createUserProfile = async (req, res) => {
-  const { displayName, profilePicture, itemsToDisplay, username } = req.body;
+  const {
+    displayName,
+    profilePicture,
+    itemsToDisplay,
+    username,
+    followers,
+    following,
+  } = req.body;
 
   try {
     mongoose.connect(MONGO_URI, options);
@@ -41,6 +48,8 @@ const createUserProfile = async (req, res) => {
       profilePicture,
       itemsToDisplay,
       username,
+      followers,
+      following,
     });
 
     res.status(200).json({
@@ -125,10 +134,102 @@ const editUser = async (req, res) => {
     });
 };
 
+const followUser = async () => {
+  const { userToFollow, currentUser } = req.body;
+
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const db = client.db("bliss");
+
+  const updateFollowing = await db
+    .collection("users")
+    .updateOne(
+      { _id: ObjectId(currentUser) },
+      { $push: { following: ObjectId(userToFollow) } }
+    );
+
+  if (updateFollowing.modifiedCount !== 0) {
+    const updateFollowers = await db
+      .collection("users")
+      .updateOne(
+        { _id: ObjectId(userToFollow) },
+        { $push: { followers: ObjectId(currentUser) } }
+      );
+    if (updateFollowers.modifiedCount !== 0) {
+      res.status(200).json({
+        status: 200,
+        message: "User successfully followed",
+        data: userToFollow,
+      });
+    } else {
+      res.status(404).json({
+        status: 404,
+        message: "Could not follow user",
+        data: userToFollow,
+      });
+    }
+  } else {
+    res.status(404).json({
+      status: 404,
+      message: "Could not follow user",
+      data: userToFollow,
+    });
+  }
+};
+
+const unfollowUser = async () => {
+  const { userToUnfollow, currentUser } = req.body;
+
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const db = client.db("bliss");
+
+  const updateFollowing = await db
+    .collection("users")
+    .updateOne(
+      { _id: ObjectId(currentUser) },
+      { $pull: { following: ObjectId(userToUnfollow) } }
+    );
+
+  if (updateFollowing.modifiedCount !== 0) {
+    const updateFollowers = await db
+      .collection("users")
+      .updateOne(
+        { _id: ObjectId(userToUnfollow) },
+        { $pull: { followers: ObjectId(currentUser) } }
+      );
+    if (updateFollowers.modifiedCount !== 0) {
+      res.status(200).json({
+        status: 200,
+        message: "User successfully followed",
+        data: userToUnfollow,
+      });
+    } else {
+      res.status(404).json({
+        status: 404,
+        message: "Could not follow user",
+        data: userToUnfollow,
+      });
+    }
+  } else {
+    res.status(404).json({
+      status: 404,
+      message: "Could not follow user",
+      data: userToUnfollow,
+    });
+  }
+};
+
 module.exports = {
   getUser,
   createUserProfile,
   getAllUsers,
   deleteUser,
   editUser,
+  followUser,
+  unfollowUser,
 };
