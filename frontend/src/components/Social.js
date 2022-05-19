@@ -58,6 +58,8 @@ const Social = () => {
             currentUser={currentUser}
             setSelectedUser={setSelectedUser}
             selectedUser={selectedUser}
+            currentUserProfile={currentUserProfile}
+            setCurrentUserProfile={setCurrentUserProfile}
           />
         </>
       ) : (

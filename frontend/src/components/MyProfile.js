@@ -70,6 +70,16 @@ const MyProfile = ({
     <Wrapper>
       <ProfilePicture src={currentUserProfile.profilePicture} />{" "}
       <DisplayName>{currentUserProfile.displayName}</DisplayName>{" "}
+      <FollowsContainer>
+        <Follows>
+          <div>Followers</div>
+          <div>{currentUserProfile.followers.length}</div>
+        </Follows>
+        <Follows>
+          <div>Following</div>
+          <div>{currentUserProfile.following.length}</div>
+        </Follows>
+      </FollowsContainer>
       <Vibes>
         <h2>My Vibes </h2>{" "}
         {artists &&
@@ -177,7 +187,7 @@ const Wrapper = styled.div`
   height: 55vh;
   position: fixed;
   width: 100vw;
-  margin-top: -20px;
+  margin-top: -30px;
 `;
 
 const Follows = styled.div`
@@ -200,7 +210,7 @@ const Button = styled.button`
   left: 50%;
   transform: translateX(-50%);
   width: 50vw;
-  margin-top: 40px;
+  margin-top: 30px;
 `;
 
 export default MyProfile;

@@ -134,7 +134,7 @@ const editUser = async (req, res) => {
     });
 };
 
-const followUser = async () => {
+const followUser = async (req, res) => {
   const { userToFollow, currentUser } = req.body;
 
   const client = new MongoClient(MONGO_URI, options);
@@ -179,8 +179,9 @@ const followUser = async () => {
   }
 };
 
-const unfollowUser = async () => {
+const unfollowUser = async (req, res) => {
   const { userToUnfollow, currentUser } = req.body;
+  console.log(req.body);
 
   const client = new MongoClient(MONGO_URI, options);
 

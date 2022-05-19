@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { AppContext } from "./AppContext";
 import PlayButton from "./PlayButton";
 
-const UserProfile = ({ userProfile, currentUser }) => {
+const UserProfile = ({
+  userProfile,
+  setUserProfile,
+  currentUserProfile,
+  setCurrentUserProfile,
+}) => {
   const {
     accessToken,
 
@@ -12,6 +17,7 @@ const UserProfile = ({ userProfile, currentUser }) => {
     playing,
     setPlaying,
   } = useContext(AppContext);
+
   const [artists, setArtists] = useState([]);
   const [tracks, setTracks] = useState([]);
 
@@ -60,6 +66,71 @@ const UserProfile = ({ userProfile, currentUser }) => {
     getVibes();
   }, [userProfile]);
 
+  const handleFollowUser = async () => {
+    const body = {
+      userToFollow: userProfile._id,
+      currentUser: currentUserProfile._id,
+    };
+    const follow = await fetch("/api/follow-user", {
+      method: "PATCH",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const followRes = await follow.json();
+
+    const fetchUser = await fetch(`/api/get-user/${userProfile.username}`);
+    const user = await fetchUser.json();
+
+    console.log(user);
+
+    if (user.status === 200) {
+      setUserProfile(user.data);
+    }
+
+    const fetchCUser = await fetch(
+      `/api/get-user/${currentUserProfile.username}`
+    );
+    const cUser = await fetchCUser.json();
+
+    if (cUser.status === 200) setCurrentUserProfile(cUser.data);
+  };
+
+  const handleUnFollowUser = async () => {
+    const body = {
+      userToUnfollow: userProfile._id,
+      currentUser: currentUserProfile._id,
+    };
+    const unfollow = await fetch("/api/unfollow-user", {
+      method: "PATCH",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const unfollowRes = await unfollow.json();
+
+    const fetchUser = await fetch(`/api/get-user/${userProfile.username}`);
+    const user = await fetchUser.json();
+
+    console.log(user);
+
+    if (user.status === 200) {
+      setUserProfile(user.data);
+    }
+
+    const fetchCUser = await fetch(
+      `/api/get-user/${currentUserProfile.username}`
+    );
+    const cUser = await fetchCUser.json();
+
+    if (cUser.status === 200) setCurrentUserProfile(cUser.data);
+  };
   return (
     <Wrapper>
       {userProfile && (
@@ -140,7 +211,11 @@ const UserProfile = ({ userProfile, currentUser }) => {
           </Vibes>
         </>
       )}
-      <Button>Follow</Button>
+      {userProfile.followers.includes(currentUserProfile._id) ? (
+        <Button onClick={handleUnFollowUser}>Unfollow</Button>
+      ) : (
+        <Button onClick={handleFollowUser}>Follow</Button>
+      )}
     </Wrapper>
   );
 };

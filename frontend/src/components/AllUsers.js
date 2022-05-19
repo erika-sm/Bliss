@@ -3,7 +3,12 @@ import styled from "styled-components";
 import LoadingSpinner from "./LoadingSpinner";
 import UserProfile from "./UserProfile";
 
-const AllUsers = ({ selectedUser, setSelectedUser }) => {
+const AllUsers = ({
+  selectedUser,
+  setSelectedUser,
+  currentUserProfile,
+  setCurrentUserProfile,
+}) => {
   const [users, setUsers] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -42,7 +47,14 @@ const AllUsers = ({ selectedUser, setSelectedUser }) => {
           ))}
         </AllUsersWrapper>
       ) : (
-        selectedUser && <UserProfile userProfile={userProfile} />
+        selectedUser && (
+          <UserProfile
+            userProfile={userProfile}
+            setUserProfile={setUserProfile}
+            currentUserProfile={currentUserProfile}
+            setCurrentUserProfile={setCurrentUserProfile}
+          />
+        )
       )}
     </Wrapper>
   );
