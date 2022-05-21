@@ -1,6 +1,7 @@
 const { MongoClient } = require("mongodb");
 const { UserProfileVal } = require("./userProfile");
 const ObjectId = require("mongodb").ObjectId;
+const lyricsSearcher = require("lyrics-searcher");
 
 require("dotenv").config();
 
@@ -58,7 +59,6 @@ const createUserProfile = async (req, res) => {
       message: "Profile successfully created!",
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: 400,
       error: "Profile could not be created. Please try again!",
@@ -224,6 +224,45 @@ const unfollowUser = async (req, res) => {
   }
 };
 
+const findLyrics = async (req, res) => {
+  const artist = req.query.artist;
+  const track = req.query.track;
+
+  const lyrics = await lyricsSearcher(artist, track);
+
+  if (lyrics) {
+    res.status(200).json({
+      status: 200,
+      message: "Lyrics successfully found",
+      data: lyrics,
+    });
+  } else {
+    res
+      .status(404)
+      .json({ status: 404, message: "No matching lyrics found. " });
+  }
+};
+
+const getUserById = async (req, res) => {
+  const _id = req.params._id;
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const db = client.db("bliss");
+
+  const user = await db.collection("users").findOne({ _id: ObjectId(_id) });
+
+  if (user) {
+    res.status(200).json({
+      status: 200,
+      data: user,
+      message: "User information successfully retrieved",
+    });
+  } else {
+    res.status(404).json({ status: 404, message: "User not found" });
+  }
+};
 module.exports = {
   getUser,
   createUserProfile,
@@ -232,4 +271,6 @@ module.exports = {
   editUser,
   followUser,
   unfollowUser,
+  findLyrics,
+  getUserById,
 };

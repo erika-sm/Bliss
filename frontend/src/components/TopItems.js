@@ -8,6 +8,7 @@ import Orb from "./Orb";
 import { orbLightness } from "./Utils";
 import SongFeaturesTooltip from "./SongFeaturesTooltip";
 import PlayButton from "./PlayButton";
+import LyricsModal from "./LyricsModal";
 
 const TopItems = () => {
   const [timeRange, setTimeRange] = useState("short_term");
@@ -18,6 +19,9 @@ const TopItems = () => {
   const [itemId, setItemId] = useState([]);
   const [itemFeatures, setItemFeatures] = useState([]);
   const [isHovered, setIsHovered] = useState();
+  const [lyrics, setLyrics] = useState("");
+  const [loadingLyrics, setLoadingLyrics] = useState(false);
+  const [viewLyrics, setViewLyrics] = useState(false);
 
   const {
     itemLimit,
@@ -103,13 +107,35 @@ const TopItems = () => {
     getTopItems();
   }, [timeRange, item, limit, accessToken, refreshToken]);
 
-  console.log(itemFeatures);
+  const findLyrics = async (artist, track) => {
+    setViewLyrics(true);
+    setLoadingLyrics(true);
+    const fetchLyrics = await fetch(
+      `/api/lyrics?artist=${artist}&track=${track}`
+    );
+
+    const lyricsRes = await fetchLyrics.json();
+    if (lyricsRes.status === 200) {
+      setLyrics(lyricsRes.data);
+      setLoadingLyrics(false);
+    } else {
+      setLyrics(lyricsRes.message);
+      setLoadingLyrics(false);
+    }
+  };
 
   return (
-    <div>
+    <Container>
       <Header />
 
       <PlaylistModal itemId={itemId} />
+      {viewLyrics && (
+        <LyricsModal
+          setViewLyrics={setViewLyrics}
+          lyrics={lyrics}
+          loadingLyrics={loadingLyrics}
+        />
+      )}
 
       <Wrapper>
         <TitleHeader>Top Items</TitleHeader>
@@ -151,16 +177,19 @@ const TopItems = () => {
             {topItems.items && item === "tracks" ? (
               <>
                 <ItemsWrapper>
-                  {!creatingPlaylist && (
-                    <PlaylistButtonWrapper
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCreatingPlaylist(true);
-                      }}
-                    >
-                      Add tracks to a playlist +
-                    </PlaylistButtonWrapper>
-                  )}
+                  {creatingPlaylist ||
+                    (viewLyrics ? (
+                      <div></div>
+                    ) : (
+                      <PlaylistButtonWrapper
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCreatingPlaylist(true);
+                        }}
+                      >
+                        Add tracks to a playlist +
+                      </PlaylistButtonWrapper>
+                    ))}
                   {topItems.items.map((track) => (
                     <TopTracks key={track.id}>
                       <div
@@ -180,7 +209,11 @@ const TopItems = () => {
                           }
                         }}
                       >
-                        {!creatingPlaylist && <PlayButton />}
+                        {creatingPlaylist || viewLyrics ? (
+                          <div></div>
+                        ) : (
+                          <PlayButton />
+                        )}
                       </div>
                       <AlbumCover
                         alt="Album cover"
@@ -189,75 +222,87 @@ const TopItems = () => {
                       <ItemDetails>
                         <TrackName>{track.name}</TrackName>
                         <ArtistName>{track.artists[0].name}</ArtistName>
+                        <ExtrasContainer>
+                          <OrbContainer
+                            onMouseOver={() => setIsHovered(track.id)}
+                            onTouchStart={() => setIsHovered(track.id)}
+                            onMouseOut={() => setIsHovered("")}
+                            onTouchEnd={() => setIsHovered("")}
+                          >
+                            Mood:
+                            {itemFeatures.length > 1 &&
+                              itemFeatures.map(
+                                (feature) =>
+                                  feature.id === track.id && (
+                                    <Orb
+                                      key={feature.id}
+                                      energy={orbLightness(
+                                        "energy",
+                                        feature.energy
+                                      )}
+                                      danceability={orbLightness(
+                                        "danceability",
+                                        feature.danceability
+                                      )}
+                                      acousticness={orbLightness(
+                                        "acousticness",
+                                        feature.acousticness
+                                      )}
+                                      valence={orbLightness(
+                                        "valence",
+                                        feature.valence
+                                      )}
+                                      tempo={orbLightness(
+                                        "tempo",
+                                        feature.tempo
+                                      )}
+                                    />
+                                  )
+                              )}
+                            {itemFeatures.length > 1 &&
+                              itemFeatures.map(
+                                (feature) =>
+                                  feature.id === track.id &&
+                                  isHovered === track.id && (
+                                    <SongFeaturesTooltip
+                                      energy={feature.energy}
+                                      energyColors={orbLightness(
+                                        "energy",
+                                        feature.energy
+                                      )}
+                                      danceability={feature.danceability}
+                                      danceabilityColors={orbLightness(
+                                        "danceability",
+                                        feature.danceability
+                                      )}
+                                      acousticness={feature.acousticness}
+                                      acousticnessColors={orbLightness(
+                                        "acousticness",
+                                        feature.acousticness
+                                      )}
+                                      valence={feature.valence}
+                                      valenceColors={orbLightness(
+                                        "valence",
+                                        feature.valence
+                                      )}
+                                      tempo={feature.tempo}
+                                      tempoColors={orbLightness(
+                                        "tempo",
+                                        feature.tempo
+                                      )}
+                                    />
+                                  )
+                              )}
+                          </OrbContainer>
 
-                        <OrbContainer
-                          onMouseOver={() => setIsHovered(track.id)}
-                          onTouchStart={() => setIsHovered(track.id)}
-                          onMouseOut={() => setIsHovered("")}
-                          onTouchEnd={() => setIsHovered("")}
-                        >
-                          Mood:
-                          {itemFeatures.length > 1 &&
-                            itemFeatures.map(
-                              (feature) =>
-                                feature.id === track.id && (
-                                  <Orb
-                                    key={feature.id}
-                                    energy={orbLightness(
-                                      "energy",
-                                      feature.energy
-                                    )}
-                                    danceability={orbLightness(
-                                      "danceability",
-                                      feature.danceability
-                                    )}
-                                    acousticness={orbLightness(
-                                      "acousticness",
-                                      feature.acousticness
-                                    )}
-                                    valence={orbLightness(
-                                      "valence",
-                                      feature.valence
-                                    )}
-                                    tempo={orbLightness("tempo", feature.tempo)}
-                                  />
-                                )
-                            )}
-                          {itemFeatures.length > 1 &&
-                            itemFeatures.map(
-                              (feature) =>
-                                feature.id === track.id &&
-                                isHovered === track.id && (
-                                  <SongFeaturesTooltip
-                                    energy={feature.energy}
-                                    energyColors={orbLightness(
-                                      "energy",
-                                      feature.energy
-                                    )}
-                                    danceability={feature.danceability}
-                                    danceabilityColors={orbLightness(
-                                      "danceability",
-                                      feature.danceability
-                                    )}
-                                    acousticness={feature.acousticness}
-                                    acousticnessColors={orbLightness(
-                                      "acousticness",
-                                      feature.acousticness
-                                    )}
-                                    valence={feature.valence}
-                                    valenceColors={orbLightness(
-                                      "valence",
-                                      feature.valence
-                                    )}
-                                    tempo={feature.tempo}
-                                    tempoColors={orbLightness(
-                                      "tempo",
-                                      feature.tempo
-                                    )}
-                                  />
-                                )
-                            )}
-                        </OrbContainer>
+                          <Lyrics
+                            onClick={() =>
+                              findLyrics(track.artists[0].name, track.name)
+                            }
+                          >
+                            || &nbsp; Lyrics
+                          </Lyrics>
+                        </ExtrasContainer>
                       </ItemDetails>
                     </TopTracks>
                   ))}
@@ -297,12 +342,16 @@ const TopItems = () => {
           </TopItemsContainer>
         )}
       </Wrapper>
-    </div>
+    </Container>
   );
 };
 
 const Wrapper = styled.div`
   margin-top: 90px;
+`;
+
+const Container = styled.div`
+  width: 100vw;
 `;
 
 const TopArtists = styled.div`
@@ -373,17 +422,20 @@ const OrbContainer = styled.div`
   display: flex;
   height: 30px;
   width: 30px;
-  margin-top: 12px;
 `;
 
 const AlbumCover = styled.img`
-  height: 70px;
-  width: 70px;
+  height: 80px;
+  width: 80px;
 `;
 
 const TrackName = styled.div``;
 
 const ArtistName = styled.div``;
+
+const Lyrics = styled.div`
+  margin-left: 70px;
+`;
 
 const ItemDetails = styled.div`
   margin-left: 10px;
@@ -393,6 +445,13 @@ const ItemDetails = styled.div`
 
 const ItemsWrapper = styled.div`
   height: 100vh;
+`;
+
+const ExtrasContainer = styled.div`
+  display: flex;
+
+  margin-top: 20px;
+  width: 100vw;
 `;
 
 export default TopItems;

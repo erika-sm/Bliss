@@ -1,7 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const SocialHeader = ({ selectedTab, setSelectedTab, setSelectedUser }) => {
+const SocialHeader = ({
+  selectedTab,
+  setSelectedTab,
+  setSelectedUser,
+  setViewFollows,
+}) => {
   return (
     <Header>
       <PageSelection>
@@ -10,6 +15,7 @@ const SocialHeader = ({ selectedTab, setSelectedTab, setSelectedUser }) => {
           onClick={() => {
             setSelectedTab("myProfile");
             setSelectedUser(false);
+            setViewFollows(false);
           }}
         >
           My Profile
@@ -19,6 +25,7 @@ const SocialHeader = ({ selectedTab, setSelectedTab, setSelectedUser }) => {
           onClick={() => {
             setSelectedTab("allUsers");
             setSelectedUser(false);
+            setViewFollows(false);
           }}
         >
           {" "}
@@ -29,6 +36,7 @@ const SocialHeader = ({ selectedTab, setSelectedTab, setSelectedUser }) => {
           onClick={() => {
             setSelectedTab("settings");
             setSelectedUser(false);
+            setViewFollows(false);
           }}
         >
           Settings

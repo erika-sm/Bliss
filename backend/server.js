@@ -4,7 +4,6 @@ const hpp = require("hpp");
 const session = require("cookie-session");
 const csurf = require("csurf");
 const helmet = require("helmet");
-const lyricsSearcher = require("lyrics-searcher");
 
 const { generateRandomString } = require("./cookieGen");
 const {
@@ -15,6 +14,8 @@ const {
   editUser,
   followUser,
   unfollowUser,
+  findLyrics,
+  getUserById,
 } = require("./handlers");
 
 const app = express();
@@ -40,6 +41,8 @@ app.delete("/api/delete-user/:_id", deleteUser);
 app.patch("/api/edit-user", editUser);
 app.patch("/api/follow-user", followUser);
 app.patch("/api/unfollow-user", unfollowUser);
+app.get("/api/lyrics", findLyrics);
+app.get("/api/get-user-by-id/:_id", getUserById);
 
 app.use(csurf());
 

@@ -8,6 +8,8 @@ const AllUsers = ({
   setSelectedUser,
   currentUserProfile,
   setCurrentUserProfile,
+  viewFollows,
+  setViewFollows,
 }) => {
   const [users, setUsers] = useState([]);
 
@@ -49,6 +51,8 @@ const AllUsers = ({
       ) : (
         selectedUser && (
           <UserProfile
+            viewFollows={viewFollows}
+            setViewFollows={setViewFollows}
             userProfile={userProfile}
             setUserProfile={setUserProfile}
             currentUserProfile={currentUserProfile}

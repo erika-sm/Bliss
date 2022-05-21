@@ -13,6 +13,7 @@ import LoadingSpinner from "./LoadingSpinner";
 const Social = () => {
   const { currentUser } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
+  const [viewFollows, setViewFollows] = useState(false);
 
   const [selectedTab, setSelectedTab] = useState("myProfile");
   const [currentUserProfile, setCurrentUserProfile] = useState();
@@ -52,10 +53,14 @@ const Social = () => {
           <SocialHeader
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
+            setViewFollows={setViewFollows}
+            setSelectedUser={setSelectedUser}
           />
           <MyProfile
             currentUser={currentUser}
             currentUserProfile={currentUserProfile}
+            viewFollows={viewFollows}
+            setViewFollows={setViewFollows}
           />
         </>
       ) : selectedTab === "allUsers" ? (
@@ -65,6 +70,7 @@ const Social = () => {
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
             setSelectedUser={setSelectedUser}
+            setViewFollows={setViewFollows}
           />
           <AllUsers
             currentUser={currentUser}
@@ -72,6 +78,8 @@ const Social = () => {
             selectedUser={selectedUser}
             currentUserProfile={currentUserProfile}
             setCurrentUserProfile={setCurrentUserProfile}
+            viewFollows={viewFollows}
+            setViewFollows={setViewFollows}
           />
         </>
       ) : (
@@ -80,6 +88,8 @@ const Social = () => {
             <SocialHeader
               selectedTab={selectedTab}
               setSelectedTab={setSelectedTab}
+              setViewFollows={setViewFollows}
+              setSelectedUser={setSelectedUser}
             />
             <ProfileSettings
               setCurrentUserProfile={setCurrentUserProfile}

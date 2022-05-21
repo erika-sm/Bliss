@@ -203,6 +203,7 @@ pointer-events: auto;
   align-items: center;
   display: flex;
   justify-content: center;
+  margin-top: 10px;
 }
 .playBackground {
   background: black;

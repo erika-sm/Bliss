@@ -68,7 +68,7 @@ const DeleteAccount = styled.button`
   width: 100vw;
   background: black;
   border: none;
-  font-size: 15px;
+  font-size: 16px;
 `;
 
 const Yes = styled.button`

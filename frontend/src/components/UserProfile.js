@@ -2,12 +2,17 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
 import PlayButton from "./PlayButton";
+import FollowsPage from "./FollowsPage";
 
 const UserProfile = ({
   userProfile,
   setUserProfile,
   currentUserProfile,
   setCurrentUserProfile,
+  viewFollows,
+  setViewFollows,
+  selectedUser,
+  setSelectedUser,
 }) => {
   const {
     accessToken,
@@ -20,6 +25,7 @@ const UserProfile = ({
 
   const [artists, setArtists] = useState([]);
   const [tracks, setTracks] = useState([]);
+  const [follows, setFollows] = useState([]);
 
   const getVibes = async () => {
     let artists = [];
@@ -128,91 +134,112 @@ const UserProfile = ({
     if (cUser.status === 200) setCurrentUserProfile(cUser.data);
   };
   return (
-    <Wrapper>
-      {userProfile && (
-        <>
-          {" "}
-          <ProfilePicture src={userProfile.profilePicture} />
-          <DisplayName>{userProfile.displayName}</DisplayName>
-          <FollowsContainer>
-            <Follows>
-              <div>Followers</div>
-              <div>{userProfile.followers.length}</div>
-            </Follows>
-            <Follows>
-              <div>Following</div>
-              <div>{userProfile.following.length}</div>
-            </Follows>
-          </FollowsContainer>
-          <Vibes>
-            <h2>Vibes </h2>{" "}
-            {artists &&
-              artists.length > 0 &&
-              artists.map((artist) => (
-                <Vibe>
-                  <div
-                    onClick={() => {
-                      if (
-                        playing === true &&
-                        trackToPlay === `spotify:artist:${artist.id}`
-                      ) {
-                        setPlaying(false);
-                      } else if (
-                        trackToPlay === `spotify:artist:${artist.id}` &&
-                        !playing
-                      ) {
-                        setPlaying(true);
-                      } else {
-                        setTrackToPlay(`spotify:artist:${artist.id}`);
-                      }
-                    }}
-                  >
-                    {" "}
-                    <PlayButton />
-                  </div>
-                  <VibeImg src={artist.images[2].url} />
-                  <VibeName>{artist.name}</VibeName>
-                </Vibe>
-              ))}
-            {tracks.length > 0 &&
-              tracks.map((track) => (
-                <Vibe>
-                  <div
-                    onClick={() => {
-                      if (
-                        playing === true &&
-                        trackToPlay === `spotify:track:${track.id}`
-                      ) {
-                        setPlaying(false);
-                      } else if (
-                        trackToPlay === `spotify:track:${track.id}` &&
-                        !playing
-                      ) {
-                        setPlaying(true);
-                      } else {
-                        setTrackToPlay(`spotify:track:${track.id}`);
-                      }
-                    }}
-                  >
-                    {" "}
-                    <PlayButton />
-                  </div>
-
-                  <VibeImg src={track.album.images[2].url} />
-                  <VibeName>
-                    {track.name} by {track.artists[0].name}
-                  </VibeName>
-                </Vibe>
-              ))}
-          </Vibes>
-        </>
-      )}
-      {userProfile.followers.includes(currentUserProfile._id) ? (
-        <Button onClick={handleUnFollowUser}>Unfollow</Button>
+    <>
+      {viewFollows ? (
+        <FollowsPage follows={follows} />
       ) : (
-        <Button onClick={handleFollowUser}>Follow</Button>
+        <Wrapper>
+          {userProfile && (
+            <>
+              {" "}
+              <ProfilePicture src={userProfile.profilePicture} />
+              <DisplayName>{userProfile.displayName}</DisplayName>
+              <FollowsContainer>
+                <Follows
+                  onClick={() => {
+                    setFollows(userProfile.followers);
+                    setViewFollows(true);
+                  }}
+                >
+                  <div>Followers</div>
+                  <div>{userProfile.followers.length}</div>
+                </Follows>
+                <Follows
+                  onClick={() => {
+                    setFollows(userProfile.following);
+                    setViewFollows(true);
+                  }}
+                >
+                  <div>Following</div>
+                  <div>{userProfile.following.length}</div>
+                </Follows>
+              </FollowsContainer>
+              <Vibes>
+                <h2>Vibes </h2>{" "}
+                {artists &&
+                  artists.length > 0 &&
+                  artists.map((artist) => (
+                    <Vibe>
+                      <div
+                        onClick={() => {
+                          if (
+                            playing === true &&
+                            trackToPlay === `spotify:artist:${artist.id}`
+                          ) {
+                            setPlaying(false);
+                          } else if (
+                            trackToPlay === `spotify:artist:${artist.id}` &&
+                            !playing
+                          ) {
+                            setPlaying(true);
+                          } else {
+                            setTrackToPlay(`spotify:artist:${artist.id}`);
+                          }
+                        }}
+                      >
+                        {" "}
+                        <PlayButtonWrapper>
+                          <PlayButton />
+                        </PlayButtonWrapper>
+                      </div>
+                      <VibeImg src={artist.images[2].url} />
+                      <VibeName>{artist.name}</VibeName>
+                    </Vibe>
+                  ))}
+                {tracks.length > 0 &&
+                  tracks.map((track) => (
+                    <Vibe>
+                      <div
+                        onClick={() => {
+                          if (
+                            playing === true &&
+                            trackToPlay === `spotify:track:${track.id}`
+                          ) {
+                            setPlaying(false);
+                          } else if (
+                            trackToPlay === `spotify:track:${track.id}` &&
+                            !playing
+                          ) {
+                            setPlaying(true);
+                          } else {
+                            setTrackToPlay(`spotify:track:${track.id}`);
+                          }
+                        }}
+                      >
+                        {" "}
+                        <PlayButtonWrapper>
+                          {" "}
+                          <PlayButton />
+                        </PlayButtonWrapper>
+                      </div>
+
+                      <VibeImg src={track.album.images[2].url} />
+                      <VibeName>
+                        {track.name} by {track.artists[0].name}
+                      </VibeName>
+                    </Vibe>
+                  ))}
+              </Vibes>
+            </>
+          )}
+          {userProfile.followers.includes(currentUserProfile._id) ? (
+            <Button onClick={handleUnFollowUser}>Unfollow</Button>
+          ) : (
+            <Button onClick={handleFollowUser}>Follow</Button>
+          )}
+        </Wrapper>
       )}
-    </Wrapper>
+    </>
   );
 };
 
@@ -275,12 +302,17 @@ const FollowsContainer = styled.div`
   transform: translateX(-25%);
 `;
 
+const PlayButtonWrapper = styled.div`
+  margin-top: -8px;
+`;
+
 const Button = styled.button`
-  position: relative;
+  width: 100px;
+
+  position: absolute;
+  top: 105%;
   left: 50%;
   transform: translateX(-50%);
-  width: 50vw;
-  margin-top: 20px;
 `;
 
 export default UserProfile;

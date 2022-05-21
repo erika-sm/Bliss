@@ -2,11 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
 import PlayButton from "./PlayButton";
+import FollowsPage from "./FollowsPage";
 
 const MyProfile = ({
   currentUserProfile,
-  setCurrentUserProfile,
   currentUser,
+  viewFollows,
+  setViewFollows,
 }) => {
   const {
     accessToken,
@@ -18,7 +20,7 @@ const MyProfile = ({
   } = useContext(AppContext);
   const [artists, setArtists] = useState([]);
   const [tracks, setTracks] = useState([]);
-  const [edit, setEdit] = useState(false);
+  const [follows, setFollows] = useState([]);
 
   const getVibes = async () => {
     let artists = [];
@@ -67,82 +69,98 @@ const MyProfile = ({
   }, [currentUser, currentUserProfile]);
 
   return (
-    <Wrapper>
-      <ProfilePicture src={currentUserProfile.profilePicture} />{" "}
-      <DisplayName>{currentUserProfile.displayName}</DisplayName>{" "}
-      <FollowsContainer>
-        <Follows>
-          <div>Followers</div>
-          <div>{currentUserProfile.followers.length}</div>
-        </Follows>
-        <Follows>
-          <div>Following</div>
-          <div>{currentUserProfile.following.length}</div>
-        </Follows>
-      </FollowsContainer>
-      <Vibes>
-        <h2>My Vibes </h2>{" "}
-        {artists &&
-          artists.length > 0 &&
-          artists.map((artist) => (
-            <Vibe>
-              <div
-                onClick={() => {
-                  if (
-                    playing === true &&
-                    trackToPlay === `spotify:artist:${artist.id}`
-                  ) {
-                    setPlaying(false);
-                  } else if (
-                    trackToPlay === `spotify:artist:${artist.id}` &&
-                    !playing
-                  ) {
-                    setPlaying(true);
-                  } else {
-                    setTrackToPlay(`spotify:artist:${artist.id}`);
-                  }
-                }}
-              >
-                {" "}
-                <PlayButton />
-              </div>
-              <VibeImg src={artist.images[2].url} />
-              <VibeName>{artist.name}</VibeName>
-            </Vibe>
-          ))}
-        {tracks &&
-          tracks.length > 0 &&
-          tracks.map((track) => (
-            <Vibe>
-              <div
-                onClick={() => {
-                  if (
-                    playing === true &&
-                    trackToPlay === `spotify:track:${track.id}`
-                  ) {
-                    setPlaying(false);
-                  } else if (
-                    trackToPlay === `spotify:track:${track.id}` &&
-                    !playing
-                  ) {
-                    setPlaying(true);
-                  } else {
-                    setTrackToPlay(`spotify:track:${track.id}`);
-                  }
-                }}
-              >
-                {" "}
-                <PlayButton />
-              </div>
+    <>
+      {viewFollows ? (
+        <FollowsPage follows={follows} />
+      ) : (
+        <Wrapper>
+          <ProfilePicture src={currentUserProfile.profilePicture} />{" "}
+          <DisplayName>{currentUserProfile.displayName}</DisplayName>{" "}
+          <FollowsContainer>
+            <Follows
+              onClick={() => {
+                setFollows(currentUserProfile.followers);
+                setViewFollows(true);
+              }}
+            >
+              <div>Followers</div>
+              <div>{currentUserProfile.followers.length}</div>
+            </Follows>
+            <Follows
+              onClick={() => {
+                setFollows(currentUserProfile.following);
+                setViewFollows(true);
+              }}
+            >
+              <div>Following</div>
+              <div>{currentUserProfile.following.length}</div>
+            </Follows>
+          </FollowsContainer>
+          <Vibes>
+            <h2>My Vibes </h2>{" "}
+            {artists &&
+              artists.length > 0 &&
+              artists.map((artist) => (
+                <Vibe>
+                  <div
+                    onClick={() => {
+                      if (
+                        playing === true &&
+                        trackToPlay === `spotify:artist:${artist.id}`
+                      ) {
+                        setPlaying(false);
+                      } else if (
+                        trackToPlay === `spotify:artist:${artist.id}` &&
+                        !playing
+                      ) {
+                        setPlaying(true);
+                      } else {
+                        setTrackToPlay(`spotify:artist:${artist.id}`);
+                      }
+                    }}
+                  >
+                    {" "}
+                    <PlayButton />
+                  </div>
+                  <VibeImg src={artist.images[2].url} />
+                  <VibeName>{artist.name}</VibeName>
+                </Vibe>
+              ))}
+            {tracks &&
+              tracks.length > 0 &&
+              tracks.map((track) => (
+                <Vibe>
+                  <div
+                    onClick={() => {
+                      if (
+                        playing === true &&
+                        trackToPlay === `spotify:track:${track.id}`
+                      ) {
+                        setPlaying(false);
+                      } else if (
+                        trackToPlay === `spotify:track:${track.id}` &&
+                        !playing
+                      ) {
+                        setPlaying(true);
+                      } else {
+                        setTrackToPlay(`spotify:track:${track.id}`);
+                      }
+                    }}
+                  >
+                    {" "}
+                    <PlayButton />
+                  </div>
 
-              <VibeImg src={track.album.images[2].url} />
-              <VibeName>
-                {track.name} by {track.artists[0].name}
-              </VibeName>
-            </Vibe>
-          ))}
-      </Vibes>
-    </Wrapper>
+                  <VibeImg src={track.album.images[2].url} />
+                  <VibeName>
+                    {track.name} by {track.artists[0].name}
+                  </VibeName>
+                </Vibe>
+              ))}
+          </Vibes>
+        </Wrapper>
+      )}
+    </>
   );
 };
 
@@ -159,7 +177,7 @@ const Vibes = styled.div`
   text-align: center;
   position: relative;
   left: 50%;
-  top: 5%;
+  top: 3%;
   transform: translateX(-50%);
   width: 90vw;
 `;
