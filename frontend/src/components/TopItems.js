@@ -125,9 +125,7 @@ const TopItems = () => {
   };
 
   return (
-    <Container>
-      <Header />
-
+    <>
       <PlaylistModal itemId={itemId} />
       {viewLyrics && (
         <LyricsModal
@@ -136,213 +134,222 @@ const TopItems = () => {
           loadingLyrics={loadingLyrics}
         />
       )}
+      <Container>
+        <Header />
 
-      <Wrapper>
-        <TitleHeader>Top Items</TitleHeader>
-        <Filter>
-          Your top{" "}
-          <Select onChange={(e) => setLimit(e.target.value)} defaultValue={20}>
-            {itemLimit.map((limit) => (
-              <option key={limit} value={limit}>
-                {limit}
-              </option>
-            ))}
-          </Select>
-          <Select
-            onChange={(e) => {
-              setItem(e.target.value);
-              setTopItems("");
-            }}
-          >
-            {" "}
-            <option value={"tracks"}>tracks</option>
-            <option value={"artists"}>artists</option>{" "}
-          </Select>{" "}
-          of
-          <Select onChange={(e) => setTimeRange(e.target.value)}>
-            <option value={"short_term"}>the last 4 weeks</option>
-            <option value={"medium_term"}>the last 6 months</option>
-            <option value={"long_term"}>all time</option>
-          </Select>
-        </Filter>
-        {loading ? (
-          <SpinnerWrapper>
-            <LoadingSpinner />
-          </SpinnerWrapper>
-        ) : (
-          <TopItemsContainer
-            style={{ overflow: creatingPlaylist ? "hidden" : "auto" }}
-          >
-            {" "}
-            {topItems.items && item === "tracks" ? (
-              <>
-                <ItemsWrapper>
-                  {creatingPlaylist ||
-                    (viewLyrics ? (
-                      <div></div>
-                    ) : (
-                      <PlaylistButtonWrapper
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCreatingPlaylist(true);
-                        }}
-                      >
-                        Add tracks to a playlist +
-                      </PlaylistButtonWrapper>
+        <Wrapper>
+          <TitleHeader>Top Items</TitleHeader>
+          <Filter>
+            Your top{" "}
+            <Select
+              onChange={(e) => setLimit(e.target.value)}
+              defaultValue={20}
+            >
+              {itemLimit.map((limit) => (
+                <option key={limit} value={limit}>
+                  {limit}
+                </option>
+              ))}
+            </Select>
+            <Select
+              onChange={(e) => {
+                setItem(e.target.value);
+                setTopItems("");
+              }}
+            >
+              {" "}
+              <option value={"tracks"}>tracks</option>
+              <option value={"artists"}>artists</option>{" "}
+            </Select>{" "}
+            of
+            <Select onChange={(e) => setTimeRange(e.target.value)}>
+              <option value={"short_term"}>the last 4 weeks</option>
+              <option value={"medium_term"}>the last 6 months</option>
+              <option value={"long_term"}>all time</option>
+            </Select>
+          </Filter>
+          {loading ? (
+            <SpinnerWrapper>
+              <LoadingSpinner />
+            </SpinnerWrapper>
+          ) : (
+            <TopItemsContainer
+              style={{ overflow: creatingPlaylist ? "hidden" : "auto" }}
+            >
+              {" "}
+              {topItems.items && item === "tracks" ? (
+                <>
+                  <ItemsWrapper>
+                    {creatingPlaylist ||
+                      (viewLyrics ? (
+                        <div></div>
+                      ) : (
+                        <PlaylistButtonWrapper
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCreatingPlaylist(true);
+                          }}
+                        >
+                          Add tracks to a playlist +
+                        </PlaylistButtonWrapper>
+                      ))}
+                    {topItems.items.map((track) => (
+                      <TopTracks key={track.id}>
+                        <div
+                          onClick={() => {
+                            if (
+                              playing === true &&
+                              trackToPlay === `spotify:track:${track.id}`
+                            ) {
+                              setPlaying(false);
+                            } else if (
+                              trackToPlay === `spotify:track:${track.id}` &&
+                              !playing
+                            ) {
+                              setPlaying(true);
+                            } else {
+                              setTrackToPlay(`spotify:track:${track.id}`);
+                            }
+                          }}
+                        >
+                          {creatingPlaylist || viewLyrics ? (
+                            <div></div>
+                          ) : (
+                            <PlayButton />
+                          )}
+                        </div>
+                        <AlbumCover
+                          alt="Album cover"
+                          src={track.album.images[2].url}
+                        />
+                        <ItemDetails>
+                          <TrackName>{track.name}</TrackName>
+                          <ArtistName>{track.artists[0].name}</ArtistName>
+                          <ExtrasContainer>
+                            <OrbContainer
+                              onMouseOver={() => setIsHovered(track.id)}
+                              onTouchStart={() => setIsHovered(track.id)}
+                              onMouseOut={() => setIsHovered("")}
+                              onTouchEnd={() => setIsHovered("")}
+                            >
+                              Mood:
+                              {itemFeatures.length > 1 &&
+                                itemFeatures.map(
+                                  (feature) =>
+                                    feature.id === track.id && (
+                                      <Orb
+                                        key={feature.id}
+                                        energy={orbLightness(
+                                          "energy",
+                                          feature.energy
+                                        )}
+                                        danceability={orbLightness(
+                                          "danceability",
+                                          feature.danceability
+                                        )}
+                                        acousticness={orbLightness(
+                                          "acousticness",
+                                          feature.acousticness
+                                        )}
+                                        valence={orbLightness(
+                                          "valence",
+                                          feature.valence
+                                        )}
+                                        tempo={orbLightness(
+                                          "tempo",
+                                          feature.tempo
+                                        )}
+                                      />
+                                    )
+                                )}
+                              {itemFeatures.length > 1 &&
+                                itemFeatures.map(
+                                  (feature) =>
+                                    feature.id === track.id &&
+                                    isHovered === track.id && (
+                                      <SongFeaturesTooltip
+                                        energy={feature.energy}
+                                        energyColors={orbLightness(
+                                          "energy",
+                                          feature.energy
+                                        )}
+                                        danceability={feature.danceability}
+                                        danceabilityColors={orbLightness(
+                                          "danceability",
+                                          feature.danceability
+                                        )}
+                                        acousticness={feature.acousticness}
+                                        acousticnessColors={orbLightness(
+                                          "acousticness",
+                                          feature.acousticness
+                                        )}
+                                        valence={feature.valence}
+                                        valenceColors={orbLightness(
+                                          "valence",
+                                          feature.valence
+                                        )}
+                                        tempo={feature.tempo}
+                                        tempoColors={orbLightness(
+                                          "tempo",
+                                          feature.tempo
+                                        )}
+                                      />
+                                    )
+                                )}
+                            </OrbContainer>
+
+                            <Lyrics
+                              onClick={() =>
+                                findLyrics(track.artists[0].name, track.name)
+                              }
+                            >
+                              || &nbsp; Lyrics
+                            </Lyrics>
+                          </ExtrasContainer>
+                        </ItemDetails>
+                      </TopTracks>
                     ))}
-                  {topItems.items.map((track) => (
-                    <TopTracks key={track.id}>
+                  </ItemsWrapper>
+                </>
+              ) : (
+                topItems.items &&
+                item === "artists" &&
+                topItems.items.map((artist) => (
+                  <>
+                    <TopArtists>
                       <div
                         onClick={() => {
                           if (
                             playing === true &&
-                            trackToPlay === `spotify:track:${track.id}`
+                            trackToPlay === `spotify:artist:${artist.id}`
                           ) {
                             setPlaying(false);
                           } else if (
-                            trackToPlay === `spotify:track:${track.id}` &&
+                            trackToPlay === `spotify:artist:${artist.id}` &&
                             !playing
                           ) {
                             setPlaying(true);
                           } else {
-                            setTrackToPlay(`spotify:track:${track.id}`);
+                            setTrackToPlay(`spotify:artist:${artist.id}`);
                           }
                         }}
                       >
-                        {creatingPlaylist || viewLyrics ? (
-                          <div></div>
-                        ) : (
-                          <PlayButton />
-                        )}
-                      </div>
+                        <PlayButton />
+                      </div>{" "}
                       <AlbumCover
-                        alt="Album cover"
-                        src={track.album.images[2].url}
-                      />
-                      <ItemDetails>
-                        <TrackName>{track.name}</TrackName>
-                        <ArtistName>{track.artists[0].name}</ArtistName>
-                        <ExtrasContainer>
-                          <OrbContainer
-                            onMouseOver={() => setIsHovered(track.id)}
-                            onTouchStart={() => setIsHovered(track.id)}
-                            onMouseOut={() => setIsHovered("")}
-                            onTouchEnd={() => setIsHovered("")}
-                          >
-                            Mood:
-                            {itemFeatures.length > 1 &&
-                              itemFeatures.map(
-                                (feature) =>
-                                  feature.id === track.id && (
-                                    <Orb
-                                      key={feature.id}
-                                      energy={orbLightness(
-                                        "energy",
-                                        feature.energy
-                                      )}
-                                      danceability={orbLightness(
-                                        "danceability",
-                                        feature.danceability
-                                      )}
-                                      acousticness={orbLightness(
-                                        "acousticness",
-                                        feature.acousticness
-                                      )}
-                                      valence={orbLightness(
-                                        "valence",
-                                        feature.valence
-                                      )}
-                                      tempo={orbLightness(
-                                        "tempo",
-                                        feature.tempo
-                                      )}
-                                    />
-                                  )
-                              )}
-                            {itemFeatures.length > 1 &&
-                              itemFeatures.map(
-                                (feature) =>
-                                  feature.id === track.id &&
-                                  isHovered === track.id && (
-                                    <SongFeaturesTooltip
-                                      energy={feature.energy}
-                                      energyColors={orbLightness(
-                                        "energy",
-                                        feature.energy
-                                      )}
-                                      danceability={feature.danceability}
-                                      danceabilityColors={orbLightness(
-                                        "danceability",
-                                        feature.danceability
-                                      )}
-                                      acousticness={feature.acousticness}
-                                      acousticnessColors={orbLightness(
-                                        "acousticness",
-                                        feature.acousticness
-                                      )}
-                                      valence={feature.valence}
-                                      valenceColors={orbLightness(
-                                        "valence",
-                                        feature.valence
-                                      )}
-                                      tempo={feature.tempo}
-                                      tempoColors={orbLightness(
-                                        "tempo",
-                                        feature.tempo
-                                      )}
-                                    />
-                                  )
-                              )}
-                          </OrbContainer>
-
-                          <Lyrics
-                            onClick={() =>
-                              findLyrics(track.artists[0].name, track.name)
-                            }
-                          >
-                            || &nbsp; Lyrics
-                          </Lyrics>
-                        </ExtrasContainer>
-                      </ItemDetails>
-                    </TopTracks>
-                  ))}
-                </ItemsWrapper>
-              </>
-            ) : (
-              topItems.items &&
-              item === "artists" &&
-              topItems.items.map((artist) => (
-                <>
-                  <TopArtists>
-                    <div
-                      onClick={() => {
-                        if (
-                          playing === true &&
-                          trackToPlay === `spotify:artist:${artist.id}`
-                        ) {
-                          setPlaying(false);
-                        } else if (
-                          trackToPlay === `spotify:artist:${artist.id}` &&
-                          !playing
-                        ) {
-                          setPlaying(true);
-                        } else {
-                          setTrackToPlay(`spotify:artist:${artist.id}`);
-                        }
-                      }}
-                    >
-                      <PlayButton />
-                    </div>{" "}
-                    <AlbumCover alt="Artist image" src={artist.images[2].url} />{" "}
-                    <Artist>{artist.name} </Artist>
-                  </TopArtists>
-                </>
-              ))
-            )}
-          </TopItemsContainer>
-        )}
-      </Wrapper>
-    </Container>
+                        alt="Artist image"
+                        src={artist.images[2].url}
+                      />{" "}
+                      <Artist>{artist.name} </Artist>
+                    </TopArtists>
+                  </>
+                ))
+              )}
+            </TopItemsContainer>
+          )}
+        </Wrapper>
+      </Container>
+    </>
   );
 };
 
