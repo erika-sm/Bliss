@@ -141,7 +141,7 @@ export const orbLightness = (audioFeature, featureValue) => {
     } else if (featureValue > 0.65 && featureValue <= 0.7) {
       lightness = 48;
       hue = 120;
-      saturation = 42;
+      saturation = 100;
     } else if (featureValue > 0.7 && featureValue <= 0.75) {
       lightness = 49;
       hue = 120;
@@ -223,7 +223,7 @@ export const orbLightness = (audioFeature, featureValue) => {
     } else if (featureValue > 0.65 && featureValue <= 0.7) {
       lightness = 58;
       hue = 39;
-      saturation = 58;
+      saturation = 100;
     } else if (featureValue > 0.7 && featureValue <= 0.75) {
       lightness = 59;
       hue = 39;
@@ -305,7 +305,7 @@ export const orbLightness = (audioFeature, featureValue) => {
     } else if (featureValue > 0.65 && featureValue <= 0.7) {
       lightness = 63;
       hue = 81;
-      saturation = 89;
+      saturation = 100;
     } else if (featureValue > 0.7 && featureValue <= 0.75) {
       lightness = 64;
       hue = 81;

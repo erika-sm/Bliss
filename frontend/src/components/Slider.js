@@ -114,20 +114,20 @@ const Slider = ({
                   1
                 </SliderContainer>
               </div>
-              {counter >= 0 && counter <= 0.35 ? (
+              {counter >= 0 && counter < 0.35 ? (
                 <Circle
                   hue={lowHue}
                   lightness={lightness}
                   saturation={lowSaturation}
                 />
-              ) : counter > 0.35 && counter <= 0.65 ? (
+              ) : counter >= 0.35 && counter < 0.65 ? (
                 <Circle
                   hue={medHue}
                   lightness={lightness}
                   saturation={medSaturation}
                 />
               ) : (
-                counter > 0.65 &&
+                counter >= 0.65 &&
                 counter <= 1 && (
                   <Circle
                     hue={highHue}

@@ -103,6 +103,8 @@ const TopItems = () => {
     getTopItems();
   }, [timeRange, item, limit, accessToken, refreshToken]);
 
+  console.log(itemFeatures);
+
   return (
     <div>
       <Header />
