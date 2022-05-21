@@ -181,7 +181,6 @@ const followUser = async (req, res) => {
 
 const unfollowUser = async (req, res) => {
   const { userToUnfollow, currentUser } = req.body;
-  console.log(req.body);
 
   const client = new MongoClient(MONGO_URI, options);
 

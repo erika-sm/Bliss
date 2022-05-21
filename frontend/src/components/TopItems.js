@@ -32,9 +32,6 @@ const TopItems = () => {
     setPlaying,
   } = useContext(AppContext);
 
-  console.log(playing);
-  console.log(trackToPlay);
-
   const getTopItems = async () => {
     setLoading(true);
     if (accessToken && refreshToken) {
@@ -181,7 +178,7 @@ const TopItems = () => {
                           }
                         }}
                       >
-                        <PlayButton />
+                        {!creatingPlaylist && <PlayButton />}
                       </div>
                       <AlbumCover
                         alt="Album cover"
@@ -318,7 +315,7 @@ const Artist = styled.div`
 const TopTracks = styled.div`
   display: flex;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 `;
 
 const TitleHeader = styled.h1`
@@ -362,14 +359,11 @@ const Filter = styled.div`
 
 const PlaylistButtonWrapper = styled.h3`
   font-size: 18px;
-  margin-top: -20px;
-  margin-bottom: 10px;
+  margin-top: -10px;
+  margin-bottom: 30px;
+  padding: 10px;
   border-bottom: solid;
   border-top: solid;
-  text-align: center;
-`;
-
-const AddTracksButton = styled.button`
   text-align: center;
 `;
 
@@ -377,7 +371,7 @@ const OrbContainer = styled.div`
   display: flex;
   height: 30px;
   width: 30px;
-  margin-top: 5px;
+  margin-top: 12px;
 `;
 
 const AlbumCover = styled.img`
@@ -390,6 +384,7 @@ const TrackName = styled.div``;
 const ArtistName = styled.div``;
 
 const ItemDetails = styled.div`
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
 `;

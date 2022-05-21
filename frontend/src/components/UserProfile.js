@@ -85,8 +85,6 @@ const UserProfile = ({
     const fetchUser = await fetch(`/api/get-user/${userProfile.username}`);
     const user = await fetchUser.json();
 
-    console.log(user);
-
     if (user.status === 200) {
       setUserProfile(user.data);
     }
@@ -117,8 +115,6 @@ const UserProfile = ({
 
     const fetchUser = await fetch(`/api/get-user/${userProfile.username}`);
     const user = await fetchUser.json();
-
-    console.log(user);
 
     if (user.status === 200) {
       setUserProfile(user.data);

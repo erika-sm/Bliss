@@ -94,12 +94,6 @@ const RecSummary = ({
         </SpinnerWrapper>
       ) : (
         <>
-          <Description>
-            Let's go over your selections before retrieving your
-            recommendations. Hit the 'Get Recommendations' button once you're
-            good to go or navigate to the previous pages to make your changes!
-          </Description>
-
           <SelectedItems>
             <Title>Selected Items</Title>
             <OrderedList>
@@ -143,10 +137,6 @@ const RecSummary = ({
   );
 };
 
-const Description = styled.div`
-  text-align: center;
-`;
-
 const GetRecommendations = styled.div`
   width: 250px;
 
@@ -167,7 +157,7 @@ const GetRecommendationsText = styled.p`
 `;
 
 const SelectedItems = styled.div`
-  margin-top: 40px;
+  margin-top: 70px;
   margin-bottom: 70px;
 `;
 

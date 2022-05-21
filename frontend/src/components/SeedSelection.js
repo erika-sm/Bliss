@@ -15,8 +15,6 @@ const SeedSelection = ({
   const [loading, setLoading] = useState(false);
   const [topArtists, setTopArtists] = useState();
 
-  console.log("text", selectedItems);
-
   const {
     accessToken,
     refreshToken,
@@ -39,13 +37,11 @@ const SeedSelection = ({
   };
 
   const removeSelectedItems = (e) => {
-    console.log("remove");
     let itemsArray = selectedItems;
 
     const index = itemsArray.indexOf(e);
 
     if (index !== -1) {
-      console.log(index);
       itemsArray.splice(index, 1);
       setSelectedItems(itemsArray);
     }
@@ -64,7 +60,6 @@ const SeedSelection = ({
         }
       );
       const response = await data.json();
-      console.log(response);
 
       if (response.error) {
         setLoading(true);
@@ -89,7 +84,6 @@ const SeedSelection = ({
   const fetchTopArtists = async () => {
     setLoading(true);
     if (accessToken && refreshToken) {
-      console.log("hello");
       const data = await fetch(
         `https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=3`,
         {
@@ -258,7 +252,7 @@ const SeedSelection = ({
 
 const SeedWrapper = styled.div`
   text-align: center;
-  font-size: 14px;
+  font-size: 15px;
 `;
 
 const Description = styled.p``;

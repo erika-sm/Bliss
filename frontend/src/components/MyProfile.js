@@ -110,7 +110,8 @@ const MyProfile = ({
               <VibeName>{artist.name}</VibeName>
             </Vibe>
           ))}
-        {tracks.length > 0 &&
+        {tracks &&
+          tracks.length > 0 &&
           tracks.map((track) => (
             <Vibe>
               <div
@@ -141,7 +142,6 @@ const MyProfile = ({
             </Vibe>
           ))}
       </Vibes>
-      <Button>Edit</Button>
     </Wrapper>
   );
 };
@@ -159,6 +159,7 @@ const Vibes = styled.div`
   text-align: center;
   position: relative;
   left: 50%;
+  top: 5%;
   transform: translateX(-50%);
   width: 90vw;
 `;
@@ -167,6 +168,8 @@ const Vibe = styled.div`
   display: flex;
   margin-top: -5px;
   text-align: center;
+  margin-bottom: 5px;
+  margin-left: 10px;
 `;
 
 const VibeImg = styled.img`

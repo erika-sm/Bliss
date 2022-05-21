@@ -12,7 +12,6 @@ const Player = () => {
     setPlaying,
   } = useContext(AppContext);
 
-  console.log(accessToken);
   useEffect(() => {
     setPlaying(true);
   }, [trackToPlay]);

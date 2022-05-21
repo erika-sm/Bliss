@@ -27,14 +27,16 @@ const Recommendations = ({
     <div style={{ overflow: creatingPlaylist ? "hidden" : "auto" }}>
       <PlaylistModal itemId={recommendationsIds} />
       Your Recommendations
-      <PlaylistButtonWrapper
-        onClick={(e) => {
-          e.stopPropagation();
-          setCreatingPlaylist(true);
-        }}
-      >
-        Add these tracks to a playlist +
-      </PlaylistButtonWrapper>
+      {!creatingPlaylist && (
+        <PlaylistButtonWrapper
+          onClick={(e) => {
+            e.stopPropagation();
+            setCreatingPlaylist(true);
+          }}
+        >
+          Add these tracks to a playlist +
+        </PlaylistButtonWrapper>
+      )}
       <ItemsWrapper>
         {recommendations.map((track) => (
           <TopTracks key={track.id}>
@@ -55,7 +57,7 @@ const Recommendations = ({
                 }
               }}
             >
-              <PlayButton />
+              {!creatingPlaylist && <PlayButton />}
             </div>
             <AlbumCover alt="Album cover" src={track.album.images[2].url} />
             <ItemDetails>
@@ -127,72 +129,27 @@ const Recommendations = ({
   );
 };
 
-const Wrapper = styled.div`
-  margin-top: 90px;
-`;
-
-const TopArtists = styled.div``;
 const TopTracks = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 20px;
 `;
 
-const TitleHeader = styled.h1`
-  text-align: center;
-  background-color: blue;
-  padding: 15px;
-`;
-
-const Select = styled.select`
-  background-color: black;
-  color: white;
-  border: none;
-  margin-right: 5px;
-  margin-left: 5px;
-  font-size: 15px;
-`;
-
-const SpinnerWrapper = styled.div`
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
-const TopItemsContainer = styled.div`
-  padding-top: 30px;
-`;
-
-const Filter = styled.div`
-  background-color: black;
-  margin-top: -20px;
-  padding-top: 10px;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  z-index: 100;
-`;
-
 const PlaylistButtonWrapper = styled.div`
   font-size: 18px;
-
+  margin-top: 10px;
+  margin-bottom: 30px;
+  padding: 10px;
   border-bottom: solid;
   border-top: solid;
   text-align: center;
-  margin-top: 10px;
-`;
-
-const AddTracksButton = styled.button`
-  margin-left: 5px;
-  position: absolute;
-  margin-top: -5px;
 `;
 
 const OrbContainer = styled.div`
   display: flex;
   height: 30px;
   width: 30px;
+  margin-top: 12px;
 `;
 
 const AlbumCover = styled.img`
@@ -205,6 +162,7 @@ const TrackName = styled.div``;
 const ArtistName = styled.div``;
 
 const ItemDetails = styled.div`
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
 `;

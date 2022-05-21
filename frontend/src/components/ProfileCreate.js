@@ -5,13 +5,14 @@ import { AppContext } from "./AppContext";
 import LoadingSpinner from "./LoadingSpinner";
 import SearchBar from "./SearchBar";
 
-const ProfileCreate = () => {
+const ProfileCreate = ({ setCurrentUserProfile, setSelectedTab }) => {
   const { currentUser } = useContext(AppContext);
   const [image, setImage] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [addItem, setAddItem] = useState();
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
+  const [creatingProfile, setCreatingProfile] = useState(false);
 
   const [userDetails, setUserDetails] = useState({
     displayName: "",
@@ -80,6 +81,7 @@ const ProfileCreate = () => {
   };
 
   const createUser = async () => {
+    setCreatingProfile(true);
     const createUser = await fetch("/api/create-profile", {
       method: "POST",
       headers: {
@@ -93,6 +95,11 @@ const ProfileCreate = () => {
 
     if (userFetch.status === 400) {
       setError("Please select 3 tracks and/or artists");
+      setCreatingProfile(false);
+    } else {
+      setCurrentUserProfile(userFetch.data);
+      setSelectedTab("myProfile");
+      setCreatingProfile(false);
     }
   };
 

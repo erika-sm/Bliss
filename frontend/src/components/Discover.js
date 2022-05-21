@@ -26,7 +26,6 @@ const Discover = () => {
     new Array(recommendationSliderArray.length).fill(false)
   );
 
-  console.log(recommendations);
   const [checkedFeatures, setCheckedFeatures] = useState({
     Energy: "",
     Danceability: "",
@@ -41,9 +40,6 @@ const Discover = () => {
     Valence: "",
     Tempo: "",
   });
-
-  console.log(isChecked);
-  console.log(checkedFeatures);
 
   const handleCheckbox = (position, name) => {
     const checkedState = isChecked.map((item, index) =>
@@ -81,16 +77,16 @@ const Discover = () => {
               playing={playing}
               setPlaying={setPlaying}
             />
-            <NavWrapper>
+            <NavWrapperSeed>
               <Nav onClick={() => setStep("intro")}>
-                <div className="navButtons"> &#8249; </div>
+                <div> Prev </div>
               </Nav>
               {selectedItems.length > 0 && (
                 <Nav onClick={() => setStep("sliders")}>
-                  <div className="navButtons"> &#8250; </div>
+                  <div> Next </div>
                 </Nav>
               )}
-            </NavWrapper>
+            </NavWrapperSeed>
           </>
         )}
         {step === "sliders" && (
@@ -104,10 +100,10 @@ const Discover = () => {
             </Intro>
             <NavWrapper>
               <Nav onClick={() => setStep("itemsSelection")}>
-                <div className="navButtons"> &#8249; </div>
+                <div> Prev </div>
               </Nav>
               <Nav onClick={() => setStep("summary")}>
-                <div className="navButtons"> &#8250; </div>
+                <div> Next </div>
               </Nav>
             </NavWrapper>
             <SliderContainer>
@@ -153,6 +149,17 @@ const Discover = () => {
         )}
         {step === "summary" && (
           <>
+            <Intro>
+              {" "}
+              Let's go over your selections before retrieving your
+              recommendations. Hit the 'Get Recommendations' button once you're
+              good to go or navigate to the previous pages to make your changes!
+            </Intro>
+            <NavWrapperSummary>
+              <Nav onClick={() => setStep("sliders")}>
+                <div> Prev </div>
+              </Nav>
+            </NavWrapperSummary>
             <RecSummary
               isChecked={isChecked}
               checkedFeatures={checkedFeatures}
@@ -166,11 +173,6 @@ const Discover = () => {
               setRecommendationsFeatures={setRecommendationsFeatures}
               setRecommendationsIds={setRecommendationsIds}
             />
-            <NavWrapper>
-              <Nav onClick={() => setStep("sliders")}>
-                <div className="navButtons"> &#8249; </div>
-              </Nav>
-            </NavWrapper>
           </>
         )}
         {recommendations && (
@@ -204,10 +206,18 @@ const TitleHeader = styled.h1`
   padding: 15px;
 `;
 
+const NavWrapperSeed = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 170px;
+  margin-right: 20px;
+`;
+
 const SliderWrapper = styled.div``;
 
 const SliderContainer = styled.div`
-  margin-top: -20px;
+  margin-top: 20px;
+  margin-left: 10px;
   font-size: 20px;
   display: block;
   overflow: auto;
@@ -238,10 +248,17 @@ const GetStartedText = styled.p`
 
 const NavWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-bottom: 20px;
   margin-top: 20px;
 `;
 
-const Nav = styled.div``;
+const Nav = styled.div`
+  font-size: 18px;
+`;
+
+const NavWrapperSummary = styled.div`
+  position: absolute;
+  margin-left: 20px;
+`;
 export default Discover;

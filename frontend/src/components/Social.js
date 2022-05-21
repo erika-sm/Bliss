@@ -8,20 +8,25 @@ import SocialHeader from "./SocialHeader";
 import AllUsers from "./AllUsers";
 import ProfileSettings from "./ProfileSettings";
 import MyProfile from "./MyProfile";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Social = () => {
   const { currentUser } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
 
   const [selectedTab, setSelectedTab] = useState("myProfile");
   const [currentUserProfile, setCurrentUserProfile] = useState();
   const [selectedUser, setSelectedUser] = useState(false);
   const getUser = async () => {
+    setLoading(true);
     const fetchUser = await fetch(`/api/get-user/${currentUser}`);
     const user = await fetchUser.json();
 
     if (user.status === 200) {
+      setLoading(false);
       setCurrentUserProfile(user.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -33,8 +38,15 @@ const Social = () => {
       <Header />
       <TitleHeader>Social Bliss</TitleHeader>
 
-      {!currentUserProfile ? (
-        <ProfileCreate />
+      {loading ? (
+        <LoadingSpinnerWrapper>
+          <LoadingSpinner />{" "}
+        </LoadingSpinnerWrapper>
+      ) : !currentUserProfile ? (
+        <ProfileCreate
+          setCurrentUserProfile={setCurrentUserProfile}
+          setSelectedTab={setSelectedTab}
+        />
       ) : selectedTab === "myProfile" ? (
         <>
           <SocialHeader
@@ -63,16 +75,18 @@ const Social = () => {
           />
         </>
       ) : (
-        <>
-          <SocialHeader
-            selectedTab={selectedTab}
-            setSelectedTab={setSelectedTab}
-          />
-          <ProfileSettings
-            setCurrentUserProfile={setCurrentUserProfile}
-            currentUserProfile={currentUserProfile}
-          />
-        </>
+        selectedTab === "settings" && (
+          <>
+            <SocialHeader
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+            <ProfileSettings
+              setCurrentUserProfile={setCurrentUserProfile}
+              currentUserProfile={currentUserProfile}
+            />
+          </>
+        )
       )}
     </Wrapper>
   );
@@ -87,6 +101,13 @@ const TitleHeader = styled.h1`
 const Wrapper = styled.div`
   margin-top: 90px;
   height: 78vh;
+`;
+
+const LoadingSpinnerWrapper = styled.div`
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 export default Social;

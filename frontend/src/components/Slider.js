@@ -25,8 +25,6 @@ const Slider = ({
   const [lightness, setLightness] = useState(defaultLightness);
   const [currentValue, setCurrentValue] = useState(counter);
 
-  console.log(counter);
-
   useEffect(() => {
     if (counter > currentValue) {
       setLightness(lightness + colorRange);

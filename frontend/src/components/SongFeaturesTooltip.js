@@ -14,7 +14,6 @@ const SongFeaturesTooltip = ({
   tempo,
   tempoColors,
 }) => {
-  console.log(energyColors);
   return (
     <ToolTipWrapper>
       <Feature>
@@ -183,7 +182,7 @@ const SongFeaturesTooltip = ({
 };
 
 const ToolTipWrapper = styled.div`
-  width: 220px;
+  width: 250px;
   height: 220px;
   background-color: black;
   color: white;
@@ -194,16 +193,16 @@ const ToolTipWrapper = styled.div`
   flex-wrap: wrap;
 
   border-radius: 6px;
-  padding: 5px;
-  position: absolute;
+  padding: 15px;
+
   z-index: 1;
   margin-top: -40px;
-  margin-left: 50px;
+  margin-left: 10px;
 
   &::after {
     content: "";
     position: absolute;
-    top: 22%;
+    top: 52%;
     right: 100%;
     margin-top: -5px;
     border-width: 7px;

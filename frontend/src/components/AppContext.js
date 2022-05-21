@@ -25,7 +25,7 @@ export const AppProvider = ({ children }) => {
   const refresh = async () => {
     const refreshT = await fetch(`/api/refreshToken/?refresh=${refreshToken}`);
     const refreshedToken = await refreshT.json();
-    console.log(refreshedToken);
+
     setAccessToken(refreshedToken.data.access_token);
   };
 

@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 const Orb = ({ energy, danceability, acousticness, valence, tempo }) => {
-  console.log(acousticness);
   return (
     <div>
       <Circle
@@ -31,7 +30,7 @@ const Circle = styled.div`
   margin-top: -5px;
   height: 30px;
   width: 30px;
-  margin-left: 5px;
+  margin-left: 8px;
   background-color: ${(props) =>
     `hsla(${props.energyHue}, ${props.energySaturation}%, ${props.energyLightness}%, 1)`};
   background-image: ${(props) => `radial-gradient(

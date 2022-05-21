@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
 import PlayButton from "./PlayButton";
+import { useDetectClickOutside } from "react-detect-click-outside";
 
 const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
   const [loading, setLoading] = useState(false);
@@ -11,6 +12,13 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
 
   const { accessToken, trackToPlay, setTrackToPlay, playing, setPlaying } =
     useContext(AppContext);
+
+  const clickAway = () => {
+    setSearchTerms("");
+  };
+  const ref = useDetectClickOutside({
+    onTriggered: clickAway,
+  });
 
   const getSearchedItems = async () => {
     setLoading(true);
@@ -44,8 +52,6 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
         }
       }
 
-      console.log(json);
-
       setLoading(false);
     }
   };
@@ -59,7 +65,7 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
   }, [searchTerms, accessToken]);
 
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <SearchWrapper>
         <select
           onChange={(e) => {
@@ -77,7 +83,7 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
         />
       </SearchWrapper>
       {searchTerms.length > 0 && searchType === "artist" ? (
-        <SearchResults>
+        <SearchResults ref={ref}>
           {results === "no matches" ? (
             <NoMatches>Couldn't find any matches</NoMatches>
           ) : (

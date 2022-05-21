@@ -115,7 +115,7 @@ const Name = styled.input`
 
 const Modal = styled.div`
   position: absolute;
-  top: 15%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   border: solid;
