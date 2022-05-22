@@ -1,4 +1,27 @@
-# Bliss
+## Bliss
+
+Bliss was designed to allow all Spotify users to take full advantage of Spotify's robust api with a simple and comprehensive UX. 
+
+
+## Tech Used
+
+- HTML
+- CSS
+- JavaScript
+- React
+- NodeJS
+- Express
+- Mongoose
+- MongoDB
+- Cookie-session
+- Csurf
+- Helmet
+- Hpp
+- Moment
+- Spotify Web Playback apk 
+- Lyrics Searcher
+
+
 
 <img width="250" alt="Screen Shot 2022-05-22 " src="https://user-images.githubusercontent.com/91225565/169678193-221c8930-0b29-483d-a582-9f086a6b5f88.png">
 <img width="250" alt="Screen Shot 2022-05-22 at 12 38 54 AM" src="https://user-images.githubusercontent.com/91225565/169678932-d555a386-f4ef-4af9-ab7a-cc4bc5ae44b2.png"><img width="250" alt="Screen Shot 2022-05-22 at 12 40 39 AM" src="https://user-images.githubusercontent.com/91225565/169678986-eef26e47-29fe-43d2-9ac0-705ca70e22d0.png">
@@ -11,3 +34,6 @@
 <img width="250" alt="Screen Shot 2022-05-22 " src="https://user-images.githubusercontent.com/91225565/169678698-807e0b90-eeba-402a-93d5-528838687974.png">
 
 <img width="250" alt="Screen Shot 2022-05-22 " src="https://user-images.githubusercontent.com/91225565/169678579-092a497e-402e-4fe3-9577-ddb1edae4abd.png">
+
+
+
