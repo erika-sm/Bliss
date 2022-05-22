@@ -6,6 +6,7 @@ import LoadingSpinner from "./LoadingSpinner";
 
 const PlaylistModal = ({ itemId }) => {
   const [loading, setLoading] = useState(false);
+  const [playlistCreated, setPlaylistCreated] = useState(false);
   const [initialPlaylistData, setInitialPlaylistData] = useState({
     name: "",
     description: "",
@@ -16,6 +17,7 @@ const PlaylistModal = ({ itemId }) => {
     useContext(AppContext);
   const clickAway = () => {
     setCreatingPlaylist(false);
+    setPlaylistCreated(false);
   };
   const ref = useDetectClickOutside({
     onTriggered: clickAway,
@@ -27,6 +29,7 @@ const PlaylistModal = ({ itemId }) => {
     await createPlaylist(currentUser, initialPlaylistData, itemId);
 
     setLoading(false);
+    setPlaylistCreated(true);
   };
 
   return (
@@ -34,66 +37,86 @@ const PlaylistModal = ({ itemId }) => {
       {creatingPlaylist && (
         <PlaylistWrapper>
           <Modal ref={ref} className="playlistModal">
-            <Title>Create Your Playlist</Title>
-            <Close onClick={() => setCreatingPlaylist(false)}>&times;</Close>
-            {loading ? (
-              <SpinnerWrapper>
-                <LoadingSpinner />
-              </SpinnerWrapper>
+            {playlistCreated ? (
+              <Created>
+                <div style={{ marginBottom: "10px" }}>
+                  {" "}
+                  Playlist successfully created!
+                </div>{" "}
+                <span>Return to your Spotify app to check it out!</span>
+              </Created>
             ) : (
-              <Form onSubmit={handlePlaylistCreation}>
-                Playlist name:{" "}
-                <Name
-                  onChange={(e) =>
-                    setInitialPlaylistData({
-                      ...initialPlaylistData,
-                      name: e.target.value,
-                    })
-                  }
-                  required
-                  type={"text"}
-                />
-                Description (optional):{" "}
-                <Description
-                  onChange={(e) =>
-                    setInitialPlaylistData({
-                      ...initialPlaylistData,
-                      description: e.target.value,
-                    })
-                  }
-                />
-                <Visibility>
-                  <label>Private</label>
-                  <RadioButton
-                    name="visibility"
-                    id="private"
-                    value="private"
-                    type={"radio"}
-                    onClick={() =>
-                      setInitialPlaylistData({
-                        ...initialPlaylistData,
-                        public: false,
-                      })
-                    }
-                    required
-                  />
-                  <label>Public</label>
-                  <RadioButton
-                    name="visibility"
-                    id="public"
-                    value="public"
-                    type={"radio"}
-                    required
-                    onClick={() =>
-                      setInitialPlaylistData({
-                        ...initialPlaylistData,
-                        public: true,
-                      })
-                    }
-                  />
-                </Visibility>
-                <SubmitButton>Create Playlist</SubmitButton>
-              </Form>
+              <>
+                {" "}
+                <Title>Create Your Playlist</Title>
+                <Close
+                  onClick={() => {
+                    setCreatingPlaylist(false);
+                    setPlaylistCreated(false);
+                  }}
+                >
+                  &times;
+                </Close>
+                {loading ? (
+                  <SpinnerWrapper>
+                    <LoadingSpinner />
+                  </SpinnerWrapper>
+                ) : (
+                  <Form onSubmit={handlePlaylistCreation}>
+                    Playlist name:{" "}
+                    <Name
+                      onChange={(e) =>
+                        setInitialPlaylistData({
+                          ...initialPlaylistData,
+                          name: e.target.value,
+                        })
+                      }
+                      required
+                      type={"text"}
+                    />
+                    Description (optional):{" "}
+                    <Description
+                      onChange={(e) =>
+                        setInitialPlaylistData({
+                          ...initialPlaylistData,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                    <Visibility>
+                      <label>Private</label>
+                      <RadioButton
+                        name="visibility"
+                        id="private"
+                        value="private"
+                        type={"radio"}
+                        onClick={() =>
+                          setInitialPlaylistData({
+                            ...initialPlaylistData,
+                            public: false,
+                          })
+                        }
+                        required
+                      />
+                      <label>Public</label>
+                      <RadioButton
+                        name="visibility"
+                        id="public"
+                        value="public"
+                        type={"radio"}
+                        required
+                        onClick={() =>
+                          setInitialPlaylistData({
+                            ...initialPlaylistData,
+                            public: true,
+                          })
+                        }
+                      />
+                    </Visibility>
+                    <SubmitButton>Create Playlist</SubmitButton>
+                  </Form>
+                )}{" "}
+              </>
             )}
           </Modal>
         </PlaylistWrapper>
@@ -122,6 +145,15 @@ const Modal = styled.div`
   border-color: white;
   padding-right: 10px;
   background-color: black;
+`;
+
+const Created = styled.div`
+  text-align: center;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
 `;
 
 const SpinnerWrapper = styled.div`

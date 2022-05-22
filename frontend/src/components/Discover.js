@@ -108,7 +108,7 @@ const Discover = () => {
             </NavWrapper>
             <SliderContainer>
               {recommendationSliderArray.map((slider, index) => (
-                <SliderWrapper>
+                <SliderWrapper key={slider.name}>
                   <input
                     type={"checkbox"}
                     value={slider.name}
@@ -216,8 +216,8 @@ const NavWrapperSeed = styled.div`
 const SliderWrapper = styled.div``;
 
 const SliderContainer = styled.div`
-  margin-top: 20px;
-  margin-left: 10px;
+  margin-top: 30px;
+  margin-left: 20px;
   font-size: 20px;
   display: block;
   overflow: auto;

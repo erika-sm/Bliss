@@ -101,7 +101,7 @@ const MyProfile = ({
             {artists &&
               artists.length > 0 &&
               artists.map((artist) => (
-                <Vibe>
+                <Vibe key={artist.id}>
                   <div
                     onClick={() => {
                       if (
@@ -129,7 +129,7 @@ const MyProfile = ({
             {tracks &&
               tracks.length > 0 &&
               tracks.map((track) => (
-                <Vibe>
+                <Vibe key={track.id}>
                   <div
                     onClick={() => {
                       if (
@@ -187,7 +187,7 @@ const Vibe = styled.div`
   margin-top: -5px;
   text-align: center;
   margin-bottom: 5px;
-  margin-left: 10px;
+  margin-left: 20px;
 `;
 
 const VibeImg = styled.img`

@@ -39,7 +39,7 @@ const LyricsWrapper = styled.div`
 
 const Modal = styled.div`
   position: absolute;
-  top: 30%;
+  top: 25%;
   left: 50%;
   transform: translateX(-50%);
   border: solid;

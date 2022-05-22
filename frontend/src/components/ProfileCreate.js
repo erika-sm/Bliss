@@ -173,7 +173,7 @@ const ProfileCreate = ({ setCurrentUserProfile, setSelectedTab }) => {
           {selectedItems &&
             selectedItems.map((item) =>
               item.track ? (
-                <ListItem>
+                <ListItem key={item.track.id}>
                   <List>{item.track.name}</List>{" "}
                   <RemoveItem
                     onClick={() => {
@@ -185,7 +185,7 @@ const ProfileCreate = ({ setCurrentUserProfile, setSelectedTab }) => {
                   </RemoveItem>
                 </ListItem>
               ) : (
-                <ListItem>
+                <ListItem key={item.id}>
                   <List>{item.name}</List>{" "}
                   <RemoveItem
                     onClick={() => {

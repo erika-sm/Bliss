@@ -214,7 +214,7 @@ const SeedSelection = ({
           {selectedItems &&
             selectedItems.map((item) =>
               item.track ? (
-                <ListItem>
+                <ListItem key={item.track.id}>
                   <List>{item.track.name}</List>{" "}
                   <RemoveItem
                     onClick={() => {
@@ -241,7 +241,7 @@ const SeedSelection = ({
             )}
         </ol>
         {selectedItems.length > 0 && (
-          <div style={{ fontSize: "11px" }}>
+          <div style={{ fontSize: "14px", textAlign: "center" }}>
             Move to the next page once you've completed your selections!
           </div>
         )}

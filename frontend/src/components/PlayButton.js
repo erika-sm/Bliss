@@ -9,7 +9,14 @@ const PlayButton = () => {
     >
       <div className="playBackground" x="0" y="0"></div>
       <div class="playIcon">
-        <div class="playTri playTransition" x="0" y="0" fill="#fff"></div>
+        <div
+          class="playTri playTransition"
+          x="0"
+          y="0"
+          width="200"
+          height="200"
+          fill="#fff"
+        ></div>
         <div class="playTri playIconTransition" x="0" y="0" fill="#fff"></div>
       </div>
       <div class="playPointer"></div>

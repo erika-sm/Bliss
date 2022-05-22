@@ -268,6 +268,7 @@ const TopItems = () => {
                                     feature.id === track.id &&
                                     isHovered === track.id && (
                                       <SongFeaturesTooltip
+                                        key={feature.id}
                                         energy={feature.energy}
                                         energyColors={orbLightness(
                                           "energy",
@@ -316,7 +317,7 @@ const TopItems = () => {
                 item === "artists" &&
                 topItems.items.map((artist) => (
                   <>
-                    <TopArtists>
+                    <TopArtists key={artist.id}>
                       <div
                         onClick={() => {
                           if (
@@ -380,6 +381,7 @@ const TitleHeader = styled.h1`
   text-align: center;
   background-color: blue;
   padding: 15px;
+  margin-top: -15px;
 `;
 
 const Select = styled.select`

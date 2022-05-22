@@ -169,7 +169,7 @@ const UserProfile = ({
                 {artists &&
                   artists.length > 0 &&
                   artists.map((artist) => (
-                    <Vibe>
+                    <Vibe key={artist.id}>
                       <div
                         onClick={() => {
                           if (
@@ -196,9 +196,10 @@ const UserProfile = ({
                       <VibeName>{artist.name}</VibeName>
                     </Vibe>
                   ))}
-                {tracks.length > 0 &&
+                {tracks &&
+                  tracks.length > 0 &&
                   tracks.map((track) => (
-                    <Vibe>
+                    <Vibe key={track.id}>
                       <div
                         onClick={() => {
                           if (
@@ -273,6 +274,7 @@ const VibeImg = styled.img`
 
 const VibeName = styled.p`
   margin-left: 5px;
+  text-align: left;
 `;
 const DisplayName = styled.h2``;
 
@@ -307,12 +309,10 @@ const PlayButtonWrapper = styled.div`
 `;
 
 const Button = styled.button`
-  width: 100px;
+  width: 80px;
 
   position: absolute;
-  top: 105%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 75%;
 `;
 
 export default UserProfile;

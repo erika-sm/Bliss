@@ -39,7 +39,7 @@ const FollowsPage = ({ follows }) => {
         followsList.length > 0 && (
           <AllUsersWrapper>
             {followsList.map((user) => (
-              <UserContainer>
+              <UserContainer key={user._id}>
                 <ProfilePicture src={user.profilePicture} />
                 <DisplayName>{user.displayName}</DisplayName>
               </UserContainer>

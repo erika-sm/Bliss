@@ -106,6 +106,7 @@ const TitleHeader = styled.h1`
   text-align: center;
   background-color: violet;
   padding: 15px;
+  margin-top: -10px;
 `;
 
 const Wrapper = styled.div`

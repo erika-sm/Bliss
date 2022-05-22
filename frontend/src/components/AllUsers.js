@@ -38,6 +38,7 @@ const AllUsers = ({
         <AllUsersWrapper>
           {users.map((user) => (
             <UserContainer
+              key={user._id}
               onClick={() => {
                 setUserProfile(user);
                 setSelectedUser(true);

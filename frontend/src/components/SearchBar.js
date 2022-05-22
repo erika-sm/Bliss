@@ -90,7 +90,7 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
             results &&
             results.items &&
             results.items.map((result) => (
-              <ResultContainer>
+              <ResultContainer key={result.id}>
                 <div
                   onClick={() => {
                     if (
@@ -141,7 +141,7 @@ const SearchBar = ({ addSelectedItems, setAddItem, addItem }) => {
               results &&
               results.items &&
               results.items.map((result) => (
-                <ResultContainer>
+                <ResultContainer key={result.id}>
                   <div
                     onClick={() => {
                       if (

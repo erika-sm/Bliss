@@ -100,11 +100,11 @@ const RecSummary = ({
               {selectedItems &&
                 selectedItems.map((item) =>
                   item.track ? (
-                    <ListItem>
+                    <ListItem key={item.track.id}>
                       <List>{item.track.name}</List>{" "}
                     </ListItem>
                   ) : (
-                    <ListItem>
+                    <ListItem key={item.id}>
                       <List>{item.name}</List>{" "}
                     </ListItem>
                   )
@@ -118,7 +118,7 @@ const RecSummary = ({
                 Object.keys(checkedFeatures).map(
                   (feature, key) =>
                     isChecked[key] === true && (
-                      <ListItem>
+                      <ListItem key={feature}>
                         <List>
                           Target {feature}: {checkedFeatures[feature]}
                         </List>{" "}
