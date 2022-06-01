@@ -3,8 +3,7 @@
 Bliss was designed to allow all Spotify users to take full advantage of Spotify's robust api with a simple and comprehensive UX. 
 
 
-
-https://user-images.githubusercontent.com/91225565/171314178-0890d213-a7ba-4743-b91d-84380fee0510.mov
+https://user-images.githubusercontent.com/91225565/171498193-4bc70a89-d8c0-4933-b3f1-90015982b021.mov
 
 
 ## Tech Used
