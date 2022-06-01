@@ -3,6 +3,10 @@
 Bliss was designed to allow all Spotify users to take full advantage of Spotify's robust api with a simple and comprehensive UX. 
 
 
+
+https://user-images.githubusercontent.com/91225565/171314178-0890d213-a7ba-4743-b91d-84380fee0510.mov
+
+
 ## Tech Used
 
 - HTML
@@ -18,8 +22,8 @@ Bliss was designed to allow all Spotify users to take full advantage of Spotify'
 - Helmet
 - Hpp
 - Moment
-- Spotify Web Playback apk 
-- Lyrics Searcher
+- Spotify Web Playback apk - https://github.com/gilbarbara/react-spotify-web-playback
+- Lyrics Searcher - https://alias-rahil.github.io/lyrics-searcher/
 
 
 
