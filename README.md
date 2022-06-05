@@ -13,7 +13,7 @@ https://user-images.githubusercontent.com/91225565/171498193-4bc70a89-d8c0-4933-
 - Create playlists of top items directly in the app and have it automatically added to your Spotify account. 
 - Integrated music player that plays music directly from Spotify for all displayed tracks or artists.
 - Quickly view lyrics for displayed tracks with the tap of a button.
-- Algorithm which maps through individual track audio features and converts numerical values to colorful orbs, giving the user a way to visualize song types without having to listen to them.
+- Algorithm which maps through individual track audio features and converts numerical values to colorful orbs, giving the user a way to visualize song types without having to listen to them. View Utils.js and Orb.js for code related to this.
 - Generate hyper-personalized recommendations based on specific musical features (i.e. tempo, danceability, energy).
 - Optional social media platform that lets users interact based on their current favorite songs and/or artists.
 - Ability to delete social media account while still retaining the ability to use all other features of Bliss. 
@@ -39,6 +39,12 @@ https://user-images.githubusercontent.com/91225565/171498193-4bc70a89-d8c0-4933-
 - Spotify Web Playback apk - https://github.com/gilbarbara/react-spotify-web-playback
 - Lyrics Searcher - https://alias-rahil.github.io/lyrics-searcher/
 
+
+## Next steps:
+
+- Optmization for desktop app. 
+- Add more customization for social media profiles. 
+- Add a HSLA color wheel to allow users to personalize the visual orbs.
 
 
 ## Screenshots 
