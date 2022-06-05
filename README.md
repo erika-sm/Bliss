@@ -3,8 +3,22 @@
 Bliss was designed to allow all Spotify users to take full advantage of Spotify's robust api with a simple and comprehensive UX. 
 
 
+## Demo video
+
 https://user-images.githubusercontent.com/91225565/171498193-4bc70a89-d8c0-4933-b3f1-90015982b021.mov
 
+## Features
+
+- See your top Spotify items of the last 4 weeks, 6 months, or all-time. Between 1 and 50 items can be displayed at a time. 
+- Create playlists of top items directly in the app and have it automatically added to your Spotify account. 
+- Integrated music player that plays music directly from Spotify for all displayed tracks or artists.
+- Quickly view lyrics for displayed tracks with the tap of a button.
+- Algorithm which maps through individual track audio features and converts numerical values to colorful orbs, giving the user a way to visualize song types without having to listen to them.
+- Generate hyper-personalized recommendations based on specific musical features (i.e. tempo, danceability, energy).
+- Optional social media platform that lets users interact based on their current favorite songs and/or artists.
+- Ability to delete social media account while still retaining the ability to use all other features of Bliss. 
+- OAuth 2.0 Authorization flow with implemented refresh tokens to keep user sessions uninterrupted. 
+- Secured backend with Csurf, Helmet, and Hpp to help minimize risks to user access tokens.  
 
 ## Tech Stack
 
@@ -27,7 +41,7 @@ https://user-images.githubusercontent.com/91225565/171498193-4bc70a89-d8c0-4933-
 
 
 
-## Features 
+## Screenshots 
 
 <img width="250" alt="Screen Shot 2022-05-22 " src="https://user-images.githubusercontent.com/91225565/169678193-221c8930-0b29-483d-a582-9f086a6b5f88.png">
 
